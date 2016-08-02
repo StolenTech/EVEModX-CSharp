@@ -154,14 +154,18 @@ namespace EVEModX {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
-            string basePayload = "import sys;sys.path.append('" + Environment.CurrentDirectory + "\\mods\\');";
+            string pathPayload = "import sys;sys.path.append('" + Environment.CurrentDirectory + "\\mods\\');";
 
             Proc p = new Proc();
             foreach(ListViewItem lvi1 in listView1.CheckedItems) {
+                Logger.Debug("Inject path payload to " + lvi1.SubItems[0].Text + " using payload{" + pathPayload + "}\n");
+                int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), pathPayload.Replace("\\", "/"));
+                checkret(ret);
+
                 foreach (ListViewItem lvi2 in listView2.CheckedItems) {
-                    string payload = basePayload + "import " + lvi2.SubItems[0].Text + ";";
+                    string payload = "import " + lvi2.SubItems[0].Text + ";";
                     Logger.Debug("Inject pid " + lvi1.SubItems[0].Text + " using payload{" + payload + "}");
-                    int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), payload.Replace("\\", "/"));
+                    ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), payload.Replace("\\", "/"));
                     checkret(ret);
                 }
   

@@ -147,7 +147,7 @@ namespace EVEModX {
                 return false;
             }
         }
-
+    
         private void buttonDoInject_Click(object sender, EventArgs e) {
             //RaisePrivileges();
             if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0)) {

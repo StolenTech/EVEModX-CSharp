@@ -61,6 +61,7 @@
             this.groupBoxProcesses.TabIndex = 4;
             this.groupBoxProcesses.TabStop = false;
             this.groupBoxProcesses.Text = "游戏进程列表";
+            this.groupBoxProcesses.Enter += new System.EventHandler(this.groupBoxProcesses_Enter);
             // 
             // listView1
             // 

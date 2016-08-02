@@ -246,6 +246,10 @@ namespace EVEModX {
                     break;
             }
         }
+
+        private void groupBoxProcesses_Enter(object sender, EventArgs e) {
+
+        }
     }
 
 

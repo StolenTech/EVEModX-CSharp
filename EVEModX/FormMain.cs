@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 
 
 namespace EVEModX {
+
     public partial class FormMain : Form {
 
         public const string emxversion = "v0.1.1";
@@ -24,9 +25,13 @@ namespace EVEModX {
             public string version;
             public string author;
             public string description;
-
         }
-        
+
+        public class Preferences {
+            public IList<string> PrefMods { get; set; }
+        }
+
+
         public FormMain() {
             InitializeComponent();
             Logger.Debug("Init\r\n");
@@ -98,8 +103,30 @@ namespace EVEModX {
                 
                 this.listView2.Items.Add(new ListViewItem(new string[] { o.name, o.description, o.version, o.author }));
             }
-            foreach (ListViewItem item in listView2.Items) {
-                item.Checked = true;
+
+            if (File.Exists("preferences.json") == false) {
+                Logger.Error("preferences.json not found, exit with code 53");
+                MessageBox.Show("preferences.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(53);
+            }
+            string jsontext2 = File.ReadAllText("preferences.json");
+            if (isValidJson(jsontext2) == false) {
+                Logger.Error("preferences.json cannot be parsed, exit with code 54");
+                MessageBox.Show("preferences.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(54);
+            }
+
+            Preferences pref = JsonConvert.DeserializeObject<Preferences>(jsontext2);
+            var l = new List<string>();
+            foreach (var item in pref.PrefMods) {
+                l.Add(item);
+            }
+            foreach (var item in l) {
+                foreach (ListViewItem lvi3 in listView2.Items) {
+                    if (lvi3.SubItems[0].Text == item) {
+                        lvi3.Checked = true;
+                    }
+                }
             }
         }
 
@@ -107,6 +134,7 @@ namespace EVEModX {
             Logger.Debug("FormMain loaded");
             UpdateMod();
         }
+        
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
 
@@ -278,6 +306,25 @@ namespace EVEModX {
         private void buttonReloadProcesses_Click(object sender, EventArgs e) {
             Logger.Debug("Refresh Process\n");
             UpdateProcess();
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
+            
+            var Mods = new List<string>();
+            foreach (ListViewItem lvi2 in listView2.CheckedItems) {
+                Mods.Add(lvi2.SubItems[0].Text);
+            }
+            Preferences pref = new Preferences {
+                PrefMods = Mods
+            };
+            string json = JsonConvert.SerializeObject(pref, Formatting.Indented);
+            FileStream fs = new FileStream("preferences.json", FileMode.Create);
+            byte[] data = new UTF8Encoding().GetBytes(json);
+            fs.Write(data, 0, data.Length);
+            fs.Flush();
+            fs.Close();
+            FormClosing -= new FormClosingEventHandler(FormMain_FormClosing);
+            Application.Exit();
         }
     }
 

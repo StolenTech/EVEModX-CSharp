@@ -294,6 +294,7 @@
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.Text = "EVEModX Framework";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.groupBoxProcesses.ResumeLayout(false);
             this.groupBoxMod.ResumeLayout(false);

@@ -35,19 +35,25 @@
             this.columnModHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnModHeaderVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnModHeaderAuthor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.checkBoxAutoRefresh = new System.Windows.Forms.CheckBox();
+            this.contextMenuStripMods = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ToolStripMenuItemReloadMods = new System.Windows.Forms.ToolStripMenuItem();
             this.timerRefreshProcess = new System.Windows.Forms.Timer(this.components);
             this.buttonDoInject = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.ToolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemOption = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemDevMode = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemModRepo = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.buttonReloadProcesses = new System.Windows.Forms.Button();
+            this.checkBoxAutoRefresh = new System.Windows.Forms.CheckBox();
             this.groupBoxProcesses.SuspendLayout();
             this.groupBoxMod.SuspendLayout();
+            this.contextMenuStripMods.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -72,6 +78,7 @@
             this.columnProcHeaderCharName});
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(6, 16);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(292, 305);
             this.listView1.TabIndex = 0;
@@ -136,16 +143,19 @@
             this.columnModHeaderAuthor.Text = "作者";
             this.columnModHeaderAuthor.Width = 118;
             // 
-            // checkBoxAutoRefresh
+            // contextMenuStripMods
             // 
-            this.checkBoxAutoRefresh.AutoSize = true;
-            this.checkBoxAutoRefresh.Location = new System.Drawing.Point(12, 373);
-            this.checkBoxAutoRefresh.Name = "checkBoxAutoRefresh";
-            this.checkBoxAutoRefresh.Size = new System.Drawing.Size(150, 21);
-            this.checkBoxAutoRefresh.TabIndex = 9;
-            this.checkBoxAutoRefresh.Text = "自动刷新进程列表(5秒)";
-            this.checkBoxAutoRefresh.UseVisualStyleBackColor = true;
-            this.checkBoxAutoRefresh.CheckedChanged += new System.EventHandler(this.checkBoxAutoRefresh_CheckedChanged);
+            this.contextMenuStripMods.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemReloadMods});
+            this.contextMenuStripMods.Name = "contextMenuStripMods";
+            this.contextMenuStripMods.Size = new System.Drawing.Size(118, 26);
+            // 
+            // ToolStripMenuItemReloadMods
+            // 
+            this.ToolStripMenuItemReloadMods.Name = "ToolStripMenuItemReloadMods";
+            this.ToolStripMenuItemReloadMods.Size = new System.Drawing.Size(117, 22);
+            this.ToolStripMenuItemReloadMods.Text = "Reload";
+            this.ToolStripMenuItemReloadMods.Click += new System.EventHandler(this.ToolStripMenuItemReloadMods_Click);
             // 
             // timerRefreshProcess
             // 
@@ -165,6 +175,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemFile,
+            this.ToolStripMenuItemOption,
             this.ToolStripMenuItemHelp});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -186,6 +197,22 @@
             this.ToolStripMenuItemExit.Size = new System.Drawing.Size(100, 22);
             this.ToolStripMenuItemExit.Text = "退出";
             this.ToolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click_1);
+            // 
+            // ToolStripMenuItemOption
+            // 
+            this.ToolStripMenuItemOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemDevMode});
+            this.ToolStripMenuItemOption.Name = "ToolStripMenuItemOption";
+            this.ToolStripMenuItemOption.Size = new System.Drawing.Size(44, 21);
+            this.ToolStripMenuItemOption.Text = "选项";
+            // 
+            // ToolStripMenuItemDevMode
+            // 
+            this.ToolStripMenuItemDevMode.CheckOnClick = true;
+            this.ToolStripMenuItemDevMode.Name = "ToolStripMenuItemDevMode";
+            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(137, 22);
+            this.ToolStripMenuItemDevMode.Text = "Dev Mode";
+            this.ToolStripMenuItemDevMode.Click += new System.EventHandler(this.ToolStripMenuItemDevMode_Click);
             // 
             // ToolStripMenuItemHelp
             // 
@@ -226,11 +253,33 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(202, 17);
             this.toolStripStatusLabel1.Text = "©2016 the EVEModX Developers";
             // 
+            // buttonReloadProcesses
+            // 
+            this.buttonReloadProcesses.Location = new System.Drawing.Point(217, 373);
+            this.buttonReloadProcesses.Name = "buttonReloadProcesses";
+            this.buttonReloadProcesses.Size = new System.Drawing.Size(99, 31);
+            this.buttonReloadProcesses.TabIndex = 13;
+            this.buttonReloadProcesses.Text = "立即刷新进程";
+            this.buttonReloadProcesses.UseVisualStyleBackColor = true;
+            this.buttonReloadProcesses.Click += new System.EventHandler(this.buttonReloadProcesses_Click);
+            // 
+            // checkBoxAutoRefresh
+            // 
+            this.checkBoxAutoRefresh.AutoSize = true;
+            this.checkBoxAutoRefresh.Location = new System.Drawing.Point(12, 379);
+            this.checkBoxAutoRefresh.Name = "checkBoxAutoRefresh";
+            this.checkBoxAutoRefresh.Size = new System.Drawing.Size(150, 21);
+            this.checkBoxAutoRefresh.TabIndex = 9;
+            this.checkBoxAutoRefresh.Text = "自动刷新进程列表(5秒)";
+            this.checkBoxAutoRefresh.UseVisualStyleBackColor = true;
+            this.checkBoxAutoRefresh.CheckedChanged += new System.EventHandler(this.checkBoxAutoRefresh_CheckedChanged);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(877, 435);
+            this.Controls.Add(this.buttonReloadProcesses);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.buttonDoInject);
             this.Controls.Add(this.checkBoxAutoRefresh);
@@ -248,6 +297,7 @@
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.groupBoxProcesses.ResumeLayout(false);
             this.groupBoxMod.ResumeLayout(false);
+            this.contextMenuStripMods.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -265,7 +315,6 @@
         private System.Windows.Forms.GroupBox groupBoxMod;
         private System.Windows.Forms.ListView listView2;
         private System.Windows.Forms.ColumnHeader columnModHeaderName;
-        private System.Windows.Forms.CheckBox checkBoxAutoRefresh;
         private System.Windows.Forms.Timer timerRefreshProcess;
         private System.Windows.Forms.ColumnHeader columnModHeaderDescription;
         private System.Windows.Forms.ColumnHeader columnModHeaderVersion;
@@ -279,6 +328,12 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemModRepo;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemOption;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemDevMode;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripMods;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReloadMods;
+        private System.Windows.Forms.Button buttonReloadProcesses;
+        private System.Windows.Forms.CheckBox checkBoxAutoRefresh;
     }
 }
 

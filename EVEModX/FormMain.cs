@@ -250,6 +250,35 @@ namespace EVEModX {
         private void groupBoxProcesses_Enter(object sender, EventArgs e) {
 
         }
+
+        private void ToolStripMenuItemDevMode_Click(object sender, EventArgs e) {
+            if (ToolStripMenuItemDevMode.CheckState == CheckState.Checked) {
+                listView2.ContextMenuStrip = contextMenuStripMods;
+            } else if (ToolStripMenuItemDevMode.CheckState == CheckState.Unchecked) {
+                listView2.ContextMenuStrip = null;
+            }
+        }
+
+        private void ToolStripMenuItemReloadMods_Click(object sender, EventArgs e) {
+            Proc p = new Proc();
+            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0)) {
+                MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return;
+            }
+            foreach (ListViewItem lvi1 in listView1.CheckedItems) {
+                foreach (ListViewItem lvi2 in listView2.SelectedItems) {
+                    string reloadPayload = "reload(" + lvi2.SubItems[0].Text + ");";
+                    Logger.Debug("Inject reload payload to pid " + lvi1.SubItems[0].Text + " using payload{" + reloadPayload + "}");
+                    int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), reloadPayload);
+                    checkret(ret);
+                }
+            }
+        }
+
+        private void buttonReloadProcesses_Click(object sender, EventArgs e) {
+            Logger.Debug("Refresh Process\n");
+            UpdateProcess();
+        }
     }
 
 

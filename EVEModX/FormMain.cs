@@ -180,6 +180,7 @@ namespace EVEModX {
     
         private void buttonDoInject_Click(object sender, EventArgs e) {
             //RaisePrivileges();
+
             if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0)) {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
@@ -187,20 +188,31 @@ namespace EVEModX {
             string pathPayload = "import sys;sys.path.append('" + Environment.CurrentDirectory + "\\mods\\');";
 
             Proc p = new Proc();
+            int err = 0;
+
             foreach(ListViewItem lvi1 in listView1.CheckedItems) {
                 Logger.Debug("Inject path payload to " + lvi1.SubItems[0].Text + " using payload{" + pathPayload + "}\n");
                 int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), pathPayload.Replace("\\", "/"));
+                if (ret == 5) {
+                    MessageBox.Show("检测到游戏进程变化，游戏已退出？", "Caution", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    err = 1;
+                    continue;
+                }
                 checkret(ret);
 
                 foreach (ListViewItem lvi2 in listView2.CheckedItems) {
+
                     string payload = "import " + lvi2.SubItems[0].Text + ";";
                     Logger.Debug("Inject pid " + lvi1.SubItems[0].Text + " using payload{" + payload + "}");
                     ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), payload.Replace("\\", "/"));
                     checkret(ret);
+
                 }
-  
             }
-            MessageBox.Show("写入成功!", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            if (err == 0) {
+                MessageBox.Show("写入成功!", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            
         }
 
         private void listView2_SelectedIndexChanged(object sender, EventArgs e) {
@@ -217,7 +229,7 @@ namespace EVEModX {
         }
 
         private void ToolStripMenuItemModRepo_Click_1(object sender, EventArgs e) {
-            Process.Start("https://github.com/EVEModX/Mods");
+            Process.Start("https://repo.evemodx.com");
         }
 
         private void checkret(int ret) {

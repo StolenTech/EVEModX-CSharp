@@ -51,6 +51,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.buttonReloadProcesses = new System.Windows.Forms.Button();
             this.checkBoxAutoRefresh = new System.Windows.Forms.CheckBox();
+            this.buttonRefreshModList = new System.Windows.Forms.Button();
             this.groupBoxProcesses.SuspendLayout();
             this.groupBoxMod.SuspendLayout();
             this.contextMenuStripMods.SuspendLayout();
@@ -274,11 +275,22 @@
             this.checkBoxAutoRefresh.UseVisualStyleBackColor = true;
             this.checkBoxAutoRefresh.CheckedChanged += new System.EventHandler(this.checkBoxAutoRefresh_CheckedChanged);
             // 
+            // buttonRefreshModList
+            // 
+            this.buttonRefreshModList.Location = new System.Drawing.Point(667, 373);
+            this.buttonRefreshModList.Name = "buttonRefreshModList";
+            this.buttonRefreshModList.Size = new System.Drawing.Size(107, 31);
+            this.buttonRefreshModList.TabIndex = 14;
+            this.buttonRefreshModList.Text = "刷新 Mod 列表";
+            this.buttonRefreshModList.UseVisualStyleBackColor = true;
+            this.buttonRefreshModList.Click += new System.EventHandler(this.buttonRefreshModList_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(877, 435);
+            this.Controls.Add(this.buttonRefreshModList);
             this.Controls.Add(this.buttonReloadProcesses);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.buttonDoInject);
@@ -335,6 +347,7 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReloadMods;
         private System.Windows.Forms.Button buttonReloadProcesses;
         private System.Windows.Forms.CheckBox checkBoxAutoRefresh;
+        private System.Windows.Forms.Button buttonRefreshModList;
     }
 }
 

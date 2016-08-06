@@ -67,7 +67,7 @@ namespace EVEModX {
             Logger.Debug("Updating processes list");
             Proc p = new Proc();
             Dictionary<int, string> pps = p.getProcessInfoByname("exefile");
-            this.listView1.Items.Clear();
+            listView1.Items.Clear();
             foreach (var d in pps) {
                 this.listView1.Items.Add(new ListViewItem(new string[] { d.Key.ToString(), d.Value }));
             }
@@ -89,9 +89,10 @@ namespace EVEModX {
             foreach (var e in d) {
 
                 if (File.Exists(e + "\\info.json") == false) {
-                    Logger.Error(e + " info.json not found, exit with code 51");
-                    MessageBox.Show(e + "\\info.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(51);
+                    //Logger.Error(e + " info.json not found, exit with code 51");
+                    // MessageBox.Show(e + "\\info.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //Environment.Exit(51);
+                    continue;
                 }
                 string jsontext = File.ReadAllText(e + "\\info.json");
                 if (isValidJson(jsontext) == false) {
@@ -101,7 +102,7 @@ namespace EVEModX {
                 }
                 ModInfo o = JsonConvert.DeserializeObject<ModInfo>(jsontext);
                 
-                this.listView2.Items.Add(new ListViewItem(new string[] { o.name, o.description, o.version, o.author }));
+                this.listView2.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
             }
 
             if (File.Exists("preferences.json") == false) {
@@ -133,6 +134,7 @@ namespace EVEModX {
         private void FormMain_Load(object sender, EventArgs e) {
             Logger.Debug("FormMain loaded");
             UpdateMod();
+            checkBoxAutoRefresh.Checked = true;
         }
         
 
@@ -325,6 +327,11 @@ namespace EVEModX {
             fs.Close();
             FormClosing -= new FormClosingEventHandler(FormMain_FormClosing);
             Application.Exit();
+        }
+
+        private void buttonRefreshModList_Click(object sender, EventArgs e) {
+            listView2.Items.Clear();
+            UpdateMod();
         }
     }
 

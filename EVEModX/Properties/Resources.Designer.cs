@@ -59,5 +59,32 @@ namespace EVEModX.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon injection_icon {
+            get {
+                object obj = ResourceManager.GetObject("injection_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {
+        ///  &quot;PrefMods&quot;: [
+        ///    &quot;Autopilot0&quot;,
+        ///    &quot;FleetAutoTarget&quot;,
+        ///    &quot;OpenKillboard&quot;,
+        ///    &quot;RemoveBannedWordsList&quot;,
+        ///    &quot;RemoveTiancityBanner&quot;
+        ///  ]
+        ///} 的本地化字符串。
+        /// </summary>
+        internal static string Preferences_std_json {
+            get {
+                return ResourceManager.GetString("Preferences_std_json", resourceCulture);
+            }
+        }
     }
 }

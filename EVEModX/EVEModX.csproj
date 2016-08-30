@@ -129,7 +129,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\20160802032652868_easyicon_net_64.ico" />
+    <EmbeddedResource Include="Resources\20160802032652868_easyicon_net_64.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

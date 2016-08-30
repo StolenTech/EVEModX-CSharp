@@ -19,6 +19,32 @@ namespace EVEModX {
 
         [DllImport("Pyi.dll", EntryPoint = "InjectPythonCodeToPID", CallingConvention = CallingConvention.Cdecl)]
         public static extern int InjectPythonCodeToPID(int pid, string code);
+
+        public delegate void updatelistDeleg(ref ListViewItem ListItem, ref int option, bool isChecked = false);
+
+        private FormWindowState currentStatus = FormWindowState.Normal;
+        
+        /// <summary>
+        /// Async update listview
+        /// </summary>
+        /// <param name="ListItem">the item need to update</param>
+        /// <param name="option">0=Add, 1=Clear</param>
+        public void updateListView(ref ListViewItem ListItem, ref int option, bool isChecked = false)
+        {
+            switch(option)
+            {
+                case 0:
+                    if (isChecked) ListItem.Checked = true;
+                    listView1.Items.Add(ListItem);
+                    break;
+                case 1:
+                    listView1.Items.Clear();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         
         public struct ModInfo {
             public string name;
@@ -40,6 +66,7 @@ namespace EVEModX {
             Logger.Debug("Env version: " + Environment.Version);
             Logger.Debug("Curr directory: " + Environment.CurrentDirectory);
             Logger.Debug("Curr user: " + Environment.UserName);
+            notifyIcon1.Icon = EVEModX.Properties.Resources.injection_icon;
 
         }
 
@@ -67,13 +94,15 @@ namespace EVEModX {
             Logger.Debug("Updating processes list");
             Proc p = new Proc();
             Dictionary<int, string> pps = p.getProcessInfoByname("exefile");
-            listView1.Items.Clear();
+            BeginInvoke(new updatelistDeleg(updateListView), new ListViewItem(), 1,false);
+            //listView1.Items.Clear();
             foreach (var d in pps) {
-                this.listView1.Items.Add(new ListViewItem(new string[] { d.Key.ToString(), d.Value }));
-            }
+                BeginInvoke(new updatelistDeleg(updateListView), new ListViewItem(new string[] { d.Key.ToString(), d.Value }), 0,true);
+                //listView1.Items.Add(new ListViewItem(new string[] { d.Key.ToString(), d.Value }));
+            }/*
             foreach (ListViewItem item in listView1.Items) {
                 item.Checked = true;
-            }
+            }*/
         }
 
         private void UpdateMod() {
@@ -105,19 +134,40 @@ namespace EVEModX {
                 this.listView2.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
             }
 
-            if (File.Exists("preferences.json") == false) {
-                Logger.Error("preferences.json not found, exit with code 53");
-                MessageBox.Show("preferences.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(53);
+            if (File.Exists("preferences.json") == false)
+            {
+                if (!writeNewJson())
+                {
+                    Logger.Error("preferences.json write failed, exit with code 55");
+                    MessageBox.Show("preferences.json 无法写入，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(55);
+                }
             }
             string jsontext2 = File.ReadAllText("preferences.json");
-            if (isValidJson(jsontext2) == false) {
-                Logger.Error("preferences.json cannot be parsed, exit with code 54");
-                MessageBox.Show("preferences.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(54);
+            if (isValidJson(jsontext2) == false)
+            {
+                if (!writeNewJson())
+                {
+                    Logger.Error("preferences.json write failed, exit with code 55");
+                    MessageBox.Show("preferences.json 无法写入，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(55);
+                }
             }
 
-            Preferences pref = JsonConvert.DeserializeObject<Preferences>(jsontext2);
+                /*
+                if (File.Exists("preferences.json") == false) {
+                    Logger.Error("preferences.json not found, exit with code 53");
+                    MessageBox.Show("preferences.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(53);
+                }
+                string jsontext2 = File.ReadAllText("preferences.json");
+                if (isValidJson(jsontext2) == false) {
+                    Logger.Error("preferences.json cannot be parsed, exit with code 54");
+                    MessageBox.Show("preferences.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(54);
+                }
+                */
+                Preferences pref = JsonConvert.DeserializeObject<Preferences>(jsontext2);
             var l = new List<string>();
             foreach (var item in pref.PrefMods) {
                 l.Add(item);
@@ -131,10 +181,24 @@ namespace EVEModX {
             }
         }
 
+        private bool writeNewJson()
+        {
+            try
+            {
+                StreamWriter sw = File.CreateText("preferences.json");
+                sw.WriteLine(EVEModX.Properties.Resources.Preferences_std_json);
+                sw.Close();
+            }catch(Exception e){
+                return false;
+            }
+            return true;
+        }
+
         private void FormMain_Load(object sender, EventArgs e) {
             Logger.Debug("FormMain loaded");
             UpdateMod();
             checkBoxAutoRefresh.Checked = true;
+            SizeChanged += new EventHandler(this.FormMain_SizeChanged);
         }
         
 
@@ -146,15 +210,17 @@ namespace EVEModX {
             Logger.Debug("Updating processes automatically");
             if (checkBoxAutoRefresh.CheckState == CheckState.Checked) {
                 timerRefreshProcess.Enabled = true;
-                timerRefreshProcess.Interval = 3000;
+                timerRefreshProcess.Interval = 1000;
             } else if (checkBoxAutoRefresh.CheckState == CheckState.Unchecked) {
                 timerRefreshProcess.Enabled = false;
             }
         }
 
         private void timerRefreshProcess_Tick(object sender, EventArgs e) {
+            Thread updateThread = new Thread(UpdateProcess);
             Logger.Debug("Ticker_refresh ticks\n");
-            UpdateProcess();
+            //UpdateProcess();
+            updateThread.Start();
         }
         
         private static bool isValidJson(string strInput) {
@@ -344,6 +410,51 @@ namespace EVEModX {
         private void buttonRefreshModList_Click(object sender, EventArgs e) {
             listView2.Items.Clear();
             UpdateMod();
+        }
+
+        private void showMainWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showWindow();
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        
+        private void FormMain_SizeChanged(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+                Visible = false;
+                ShowInTaskbar = false;
+            }else
+            {
+                Visible = true;
+                ShowInTaskbar = true;
+            }
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            showWindow();
+        }
+
+        private void showWindow()
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                Show();
+                WindowState = FormWindowState.Normal;
+                BringToFront();
+                Activate();
+            }
+            else if(WindowState == FormWindowState.Normal)
+            {
+                WindowState = FormWindowState.Minimized;
+
+            }
         }
     }
 

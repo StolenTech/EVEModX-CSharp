@@ -52,11 +52,17 @@
             this.buttonReloadProcesses = new System.Windows.Forms.Button();
             this.checkBoxAutoRefresh = new System.Windows.Forms.CheckBox();
             this.buttonRefreshModList = new System.Windows.Forms.Button();
+            this.contextMenuStripIconRightClick = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showMainWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.groupBoxProcesses.SuspendLayout();
             this.groupBoxMod.SuspendLayout();
             this.contextMenuStripMods.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStripIconRightClick.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxProcesses
@@ -195,7 +201,7 @@
             // ToolStripMenuItemExit
             // 
             this.ToolStripMenuItemExit.Name = "ToolStripMenuItemExit";
-            this.ToolStripMenuItemExit.Size = new System.Drawing.Size(100, 22);
+            this.ToolStripMenuItemExit.Size = new System.Drawing.Size(152, 22);
             this.ToolStripMenuItemExit.Text = "退出";
             this.ToolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click_1);
             // 
@@ -211,7 +217,7 @@
             // 
             this.ToolStripMenuItemDevMode.CheckOnClick = true;
             this.ToolStripMenuItemDevMode.Name = "ToolStripMenuItemDevMode";
-            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(137, 22);
+            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(152, 22);
             this.ToolStripMenuItemDevMode.Text = "Dev Mode";
             this.ToolStripMenuItemDevMode.Click += new System.EventHandler(this.ToolStripMenuItemDevMode_Click);
             // 
@@ -245,6 +251,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 413);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(877, 22);
+            this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 12;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -271,7 +278,7 @@
             this.checkBoxAutoRefresh.Name = "checkBoxAutoRefresh";
             this.checkBoxAutoRefresh.Size = new System.Drawing.Size(150, 21);
             this.checkBoxAutoRefresh.TabIndex = 9;
-            this.checkBoxAutoRefresh.Text = "自动刷新进程列表(5秒)";
+            this.checkBoxAutoRefresh.Text = "自动刷新进程列表(1秒)";
             this.checkBoxAutoRefresh.UseVisualStyleBackColor = true;
             this.checkBoxAutoRefresh.CheckedChanged += new System.EventHandler(this.checkBoxAutoRefresh_CheckedChanged);
             // 
@@ -284,6 +291,41 @@
             this.buttonRefreshModList.Text = "刷新 Mod 列表";
             this.buttonRefreshModList.UseVisualStyleBackColor = true;
             this.buttonRefreshModList.Click += new System.EventHandler(this.buttonRefreshModList_Click);
+            // 
+            // contextMenuStripIconRightClick
+            // 
+            this.contextMenuStripIconRightClick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showMainWindowToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.quitToolStripMenuItem});
+            this.contextMenuStripIconRightClick.Name = "contextMenuStripIconRightClick";
+            this.contextMenuStripIconRightClick.Size = new System.Drawing.Size(166, 54);
+            // 
+            // showMainWindowToolStripMenuItem
+            // 
+            this.showMainWindowToolStripMenuItem.Name = "showMainWindowToolStripMenuItem";
+            this.showMainWindowToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.showMainWindowToolStripMenuItem.Text = "显示/隐藏主窗口";
+            this.showMainWindowToolStripMenuItem.Click += new System.EventHandler(this.showMainWindowToolStripMenuItem_Click);
+            // 
+            // quitToolStripMenuItem
+            // 
+            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.quitToolStripMenuItem.Text = "退出";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStripIconRightClick;
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
             // 
             // FormMain
             // 
@@ -315,6 +357,7 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStripIconRightClick.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -348,6 +391,11 @@
         private System.Windows.Forms.Button buttonReloadProcesses;
         private System.Windows.Forms.CheckBox checkBoxAutoRefresh;
         private System.Windows.Forms.Button buttonRefreshModList;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripIconRightClick;
+        private System.Windows.Forms.ToolStripMenuItem showMainWindowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

@@ -11,9 +11,11 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 
 
-namespace EVEModX {
+namespace EVEModX
+{
 
-    public partial class FormMain : Form {
+    public partial class FormMain : Form
+    {
 
         public const string emxversion = "v0.1.1";
 
@@ -23,7 +25,7 @@ namespace EVEModX {
         public delegate void updatelistDeleg(ref ListViewItem ListItem, ref int option, bool isChecked = false);
 
         private FormWindowState currentStatus = FormWindowState.Normal;
-        
+
         /// <summary>
         /// Async update listview
         /// </summary>
@@ -31,7 +33,7 @@ namespace EVEModX {
         /// <param name="option">0=Add, 1=Clear</param>
         public void updateListView(ref ListViewItem ListItem, ref int option, bool isChecked = false)
         {
-            switch(option)
+            switch (option)
             {
                 case 0:
                     if (isChecked) ListItem.Checked = true;
@@ -45,20 +47,30 @@ namespace EVEModX {
             }
         }
 
-        
-        public struct ModInfo {
+        /// <summary>
+        /// Mod Info Storage Structure
+        /// </summary>
+        public struct ModInfo
+        {
             public string name;
             public string version;
             public string author;
             public string description;
         }
 
-        public class Preferences {
+        /// <summary>
+        /// Preferences Class
+        /// </summary>
+        public class Preferences
+        {
             public IList<string> PrefMods { get; set; }
         }
 
-
-        public FormMain() {
+        /// <summary>
+        /// Initialize Form Main
+        /// </summary>
+        public FormMain()
+        {
             InitializeComponent();
             Logger.Debug("Init\r\n");
             Logger.Debug("Version: " + emxversion);
@@ -67,70 +79,95 @@ namespace EVEModX {
             Logger.Debug("Curr directory: " + Environment.CurrentDirectory);
             Logger.Debug("Curr user: " + Environment.UserName);
             notifyIcon1.Icon = EVEModX.Properties.Resources.injection_icon;
-
         }
 
-        class Proc {
-            
-            public Dictionary<int,string> getProcessInfoByname(string processName) {
+        /// <summary>
+        /// Process operations class
+        /// </summary>
+        class Proc
+        {
+
+            /// <summary>
+            /// Get Process Info By Process Name
+            /// </summary>
+            /// <param name="processName">String, the name of the process</param>
+            /// <returns></returns>
+            public Dictionary<int, string> getProcessInfoByname(string processName)
+            {
                 Dictionary<int, string> ret = new Dictionary<int, string>();
                 Process[] gameProcessLocalByName = Process.GetProcessesByName(processName);
-                foreach (Process item in gameProcessLocalByName) {
-                    if (item.MainWindowTitle.Length < 4) {
+                foreach (Process item in gameProcessLocalByName)
+                {
+                    if (item.MainWindowTitle.Length < 4)
+                    {
                         continue;
                     }
-                    ret.Add(item.Id, item.MainWindowTitle.Remove(0,6));
+                    ret.Add(item.Id, item.MainWindowTitle.Remove(0, 6));
                 }
                 return ret;
             }
-            public int Inject(int pid, string payload) {
-
+            /// <summary>
+            /// inject code caller
+            /// </summary>
+            /// <param name="pid">the PID of the process</param>
+            /// <param name="payload">the payload to inject</param>
+            /// <returns>if the injection is successful</returns>
+            public int Inject(int pid, string payload)
+            {
                 int ret = InjectPythonCodeToPID(pid, payload);
                 return ret;
             }
         }
 
-        private void UpdateProcess() {
+        /// <summary>
+        /// Background update process list
+        /// </summary>
+        private void UpdateProcess()
+        {
             Logger.Debug("Updating processes list");
             Proc p = new Proc();
             Dictionary<int, string> pps = p.getProcessInfoByname("exefile");
-            BeginInvoke(new updatelistDeleg(updateListView), new ListViewItem(), 1,false);
-            //listView1.Items.Clear();
-            foreach (var d in pps) {
-                BeginInvoke(new updatelistDeleg(updateListView), new ListViewItem(new string[] { d.Key.ToString(), d.Value }), 0,true);
-                //listView1.Items.Add(new ListViewItem(new string[] { d.Key.ToString(), d.Value }));
-            }/*
-            foreach (ListViewItem item in listView1.Items) {
-                item.Checked = true;
-            }*/
+            BeginInvoke(new updatelistDeleg(updateListView), new ListViewItem(), 1, false);
+            foreach (var d in pps)
+            {
+                BeginInvoke(new updatelistDeleg(updateListView), new ListViewItem(new string[] { d.Key.ToString(), d.Value }), 0, true);
+            }
         }
 
-        private void UpdateMod() {
+        /// <summary>
+        /// Update Mod List
+        /// </summary>
+        private void UpdateMod()
+        {
             Logger.Debug("Updating mods list");
 
-            if (Directory.Exists("mods") == false) {
+            if (Directory.Exists("mods") == false)
+            {
                 Logger.Error("Mod dir not found, exit with code 50");
                 MessageBox.Show("Mod 文件夹未找到，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(50);
             }
             var d = Directory.GetDirectories("mods");
 
-            foreach (var e in d) {
+            foreach (var e in d)
+            {
 
-                if (File.Exists(e + "\\info.json") == false) {
+                if (File.Exists(e + "\\info.json") == false)
+                {
                     //Logger.Error(e + " info.json not found, exit with code 51");
                     // MessageBox.Show(e + "\\info.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     //Environment.Exit(51);
                     continue;
                 }
                 string jsontext = File.ReadAllText(e + "\\info.json");
-                if (isValidJson(jsontext) == false) {
+                if (isValidJson(jsontext) == false)
+                {
                     Logger.Error(e + " info.json cannot be parsed, exit with code 52");
                     MessageBox.Show(e + "\\info.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Environment.Exit(52);
                 }
                 ModInfo o = JsonConvert.DeserializeObject<ModInfo>(jsontext);
-                
+
                 this.listView2.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
             }
 
@@ -153,101 +190,137 @@ namespace EVEModX {
                     Environment.Exit(55);
                 }
             }
-
-                /*
-                if (File.Exists("preferences.json") == false) {
-                    Logger.Error("preferences.json not found, exit with code 53");
-                    MessageBox.Show("preferences.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(53);
-                }
-                string jsontext2 = File.ReadAllText("preferences.json");
-                if (isValidJson(jsontext2) == false) {
-                    Logger.Error("preferences.json cannot be parsed, exit with code 54");
-                    MessageBox.Show("preferences.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(54);
-                }
-                */
-                Preferences pref = JsonConvert.DeserializeObject<Preferences>(jsontext2);
+            Preferences pref = JsonConvert.DeserializeObject<Preferences>(jsontext2);
             var l = new List<string>();
-            foreach (var item in pref.PrefMods) {
+            foreach (var item in pref.PrefMods)
+            {
                 l.Add(item);
             }
-            foreach (var item in l) {
-                foreach (ListViewItem lvi3 in listView2.Items) {
-                    if (lvi3.SubItems[0].Text == item) {
+            foreach (var item in l)
+            {
+                foreach (ListViewItem lvi3 in listView2.Items)
+                {
+                    if (lvi3.SubItems[0].Text == item)
+                    {
                         lvi3.Checked = true;
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Overrite existing or non-existing preferences.json
+        /// </summary>
+        /// <returns>if the writing operation is successful</returns>
         private bool writeNewJson()
         {
             try
             {
+                if (File.Exists("preferences.json")) { File.Delete("preferences.json"); }
                 StreamWriter sw = File.CreateText("preferences.json");
                 sw.WriteLine(EVEModX.Properties.Resources.Preferences_std_json);
                 sw.Close();
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return false;
             }
             return true;
         }
 
-        private void FormMain_Load(object sender, EventArgs e) {
+        /// <summary>
+        /// Called by Form Load Event, initialize the main form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormMain_Load(object sender, EventArgs e)
+        {
             Logger.Debug("FormMain loaded");
             UpdateMod();
             checkBoxAutoRefresh.Checked = true;
             SizeChanged += new EventHandler(this.FormMain_SizeChanged);
         }
-        
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
 
-        private void checkBoxAutoRefresh_CheckedChanged(object sender, EventArgs e) {
+        /// <summary>
+        /// Enable or disable Process List auto refresh
+        /// </summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">eventargs</param>
+        private void checkBoxAutoRefresh_CheckedChanged(object sender, EventArgs e)
+        {
             Logger.Debug("Updating processes automatically");
-            if (checkBoxAutoRefresh.CheckState == CheckState.Checked) {
+            if (checkBoxAutoRefresh.CheckState == CheckState.Checked)
+            {
                 timerRefreshProcess.Enabled = true;
                 timerRefreshProcess.Interval = 1000;
-            } else if (checkBoxAutoRefresh.CheckState == CheckState.Unchecked) {
+            }
+            else if (checkBoxAutoRefresh.CheckState == CheckState.Unchecked)
+            {
                 timerRefreshProcess.Enabled = false;
             }
         }
 
-        private void timerRefreshProcess_Tick(object sender, EventArgs e) {
+        /// <summary>
+        /// Start second process to refresh process list, called by timerRefreshProcess tick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timerRefreshProcess_Tick(object sender, EventArgs e)
+        {
             Thread updateThread = new Thread(UpdateProcess);
             Logger.Debug("Ticker_refresh ticks\n");
-            //UpdateProcess();
             updateThread.Start();
         }
-        
-        private static bool isValidJson(string strInput) {
+
+        /// <summary>
+        /// check if the json is valid
+        /// </summary>
+        /// <param name="strInput">the JSON string to be validated</param>
+        /// <returns></returns>
+        private static bool isValidJson(string strInput)
+        {
             strInput = strInput.Trim();
-            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || (strInput.StartsWith("[") && strInput.EndsWith("]"))) {
-                try {
-                    var obj = JToken.Parse(strInput);
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || (strInput.StartsWith("[") && strInput.EndsWith("]")))
+            {
+                try
+                {
+                    JToken obj = JToken.Parse(strInput);
                     return true;
                 }
-                catch (JsonReaderException jex) {
+                catch (JsonReaderException jex)
+                {
                     Console.WriteLine(jex.Message);
                     return false;
                 }
-                catch (Exception ex){
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex.ToString());
                     return false;
                 }
             }
-            else {
+            else
+            {
                 return false;
             }
         }
-    
-        private void buttonDoInject_Click(object sender, EventArgs e) {
+
+        /// <summary>
+        /// On Button DoInject clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonDoInject_Click(object sender, EventArgs e)
+        {
             //RaisePrivileges();
 
-            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0)) {
+            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0))
+            {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
@@ -256,17 +329,20 @@ namespace EVEModX {
             Proc p = new Proc();
             int err = 0;
 
-            foreach(ListViewItem lvi1 in listView1.CheckedItems) {
+            foreach (ListViewItem lvi1 in listView1.CheckedItems)
+            {
                 Logger.Debug("Inject path payload to " + lvi1.SubItems[0].Text + " using payload{" + pathPayload + "}\n");
                 int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), pathPayload.Replace("\\", "/"));
-                if (ret == 5) {
+                if (ret == 5)
+                {
                     MessageBox.Show("检测到游戏进程变化，游戏已退出？", "Caution", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     err = 1;
                     continue;
                 }
                 checkret(ret);
 
-                foreach (ListViewItem lvi2 in listView2.CheckedItems) {
+                foreach (ListViewItem lvi2 in listView2.CheckedItems)
+                {
 
                     string payload = "import " + lvi2.SubItems[0].Text + ";";
                     Logger.Debug("Inject pid " + lvi1.SubItems[0].Text + " using payload{" + payload + "}");
@@ -275,31 +351,44 @@ namespace EVEModX {
 
                 }
             }
-            if (err == 0) {
+            if (err == 0)
+            {
                 MessageBox.Show("写入成功!", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-            
-        }
-
-        private void listView2_SelectedIndexChanged(object sender, EventArgs e) {
 
         }
-        
-        private void ToolStripMenuItemAbout_Click_1(object sender, EventArgs e) {
+
+        private void listView2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        #region "Hide and display tray main window in tray icon"
+        private void ToolStripMenuItemAbout_Click_1(object sender, EventArgs e)
+        {
             FormAbout frmAbout = new FormAbout();
             frmAbout.Show();
         }
 
-        private void ToolStripMenuItemExit_Click_1(object sender, EventArgs e) {
+        private void ToolStripMenuItemExit_Click_1(object sender, EventArgs e)
+        {
             Environment.Exit(0);
         }
 
-        private void ToolStripMenuItemModRepo_Click_1(object sender, EventArgs e) {
+        private void ToolStripMenuItemModRepo_Click_1(object sender, EventArgs e)
+        {
             Process.Start("https://repo.evemodx.com");
         }
-
-        private void checkret(int ret) {
-            switch (ret) {
+        #endregion
+        
+        /// <summary>
+        /// Check the return value of InjectPython
+        /// </summary>
+        /// <param name="ret">return value</param>
+        private void checkret(int ret)
+        {
+            switch (ret)
+            {
                 case 1:
                     Logger.Error("OpenProcessToken or hModule Failed, code 1");
                     MessageBox.Show("OpenProcessToken or hModule Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -355,26 +444,45 @@ namespace EVEModX {
             }
         }
 
-        private void groupBoxProcesses_Enter(object sender, EventArgs e) {
+        private void groupBoxProcesses_Enter(object sender, EventArgs e)
+        {
 
         }
 
-        private void ToolStripMenuItemDevMode_Click(object sender, EventArgs e) {
-            if (ToolStripMenuItemDevMode.CheckState == CheckState.Checked) {
+        /// <summary>
+        /// on ToolStripMenuItemDevMode Clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemDevMode_Click(object sender, EventArgs e)
+        {
+            if (ToolStripMenuItemDevMode.CheckState == CheckState.Checked)
+            {
                 listView2.ContextMenuStrip = contextMenuStripMods;
-            } else if (ToolStripMenuItemDevMode.CheckState == CheckState.Unchecked) {
+            }
+            else if (ToolStripMenuItemDevMode.CheckState == CheckState.Unchecked)
+            {
                 listView2.ContextMenuStrip = null;
             }
         }
 
-        private void ToolStripMenuItemReloadMods_Click(object sender, EventArgs e) {
+        /// <summary>
+        /// On reload mods clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemReloadMods_Click(object sender, EventArgs e)
+        {
             Proc p = new Proc();
-            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0)) {
+            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0))
+            {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
-            foreach (ListViewItem lvi1 in listView1.CheckedItems) {
-                foreach (ListViewItem lvi2 in listView2.SelectedItems) {
+            foreach (ListViewItem lvi1 in listView1.CheckedItems)
+            {
+                foreach (ListViewItem lvi2 in listView2.SelectedItems)
+                {
                     string reloadPayload = "reload(" + lvi2.SubItems[0].Text + ");";
                     Logger.Debug("Inject reload payload to pid " + lvi1.SubItems[0].Text + " using payload{" + reloadPayload + "}");
                     int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), reloadPayload);
@@ -383,18 +491,32 @@ namespace EVEModX {
             }
         }
 
-        private void buttonReloadProcesses_Click(object sender, EventArgs e) {
+        /// <summary>
+        /// on refresh process button clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonReloadProcesses_Click(object sender, EventArgs e)
+        {
             Logger.Debug("Refresh Process\n");
             UpdateProcess();
         }
 
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
-            
+        /// <summary>
+        /// process the form closing event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
             var Mods = new List<string>();
-            foreach (ListViewItem lvi2 in listView2.CheckedItems) {
+            foreach (ListViewItem lvi2 in listView2.CheckedItems)
+            {
                 Mods.Add(lvi2.SubItems[0].Text);
             }
-            Preferences pref = new Preferences {
+            Preferences pref = new Preferences
+            {
                 PrefMods = Mods
             };
             string json = JsonConvert.SerializeObject(pref, Formatting.Indented);
@@ -407,7 +529,9 @@ namespace EVEModX {
             Application.Exit();
         }
 
-        private void buttonRefreshModList_Click(object sender, EventArgs e) {
+        #region "tray icon processer"
+        private void buttonRefreshModList_Click(object sender, EventArgs e)
+        {
             listView2.Items.Clear();
             UpdateMod();
         }
@@ -421,7 +545,7 @@ namespace EVEModX {
         {
             Application.Exit();
         }
-        
+
         private void FormMain_SizeChanged(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
@@ -429,7 +553,8 @@ namespace EVEModX {
                 Hide();
                 Visible = false;
                 ShowInTaskbar = false;
-            }else
+            }
+            else
             {
                 Visible = true;
                 ShowInTaskbar = true;
@@ -450,16 +575,20 @@ namespace EVEModX {
                 BringToFront();
                 Activate();
             }
-            else if(WindowState == FormWindowState.Normal)
+            else if (WindowState == FormWindowState.Normal)
             {
                 WindowState = FormWindowState.Minimized;
 
             }
         }
     }
+    #endregion
 
-
-    public class Logger {
+    /// <summary>
+    /// logger class
+    /// </summary>
+    public class Logger
+    {
         private const string PATH = "log";
         private const string FILE_NAME = "log.txt";
         private const string FULL_NAME = PATH + "/" + FILE_NAME;
@@ -474,27 +603,44 @@ namespace EVEModX {
         private static int ContinueCount = 0;
         public static int AllWriteCount = 0;
 
-        static Logger() {
+        /// <summary>
+        /// initial vars
+        /// </summary>
+        static Logger()
+        {
             Continue_WriteSw = new Stopwatch();
         }
 
-        private static string ProjectFullName {
-            get {
+        /// <summary>
+        /// get the full name of project
+        /// </summary>
+        private static string ProjectFullName
+        {
+            get
+            {
                 if (string.IsNullOrEmpty(GUID))
                     GUID = Guid.NewGuid().ToString();
                 return PATH + "/" + "EMX_" + GUID + "_" + FILE_NAME;
             }
         }
 
-        private static void Write(string msg) {
+        /// <summary>
+        /// write log text into file
+        /// </summary>
+        /// <param name="msg"></param>
+        private static void Write(string msg)
+        {
             if (string.IsNullOrEmpty(msg)) return;
 
-            lock (Locker) {
-                if (Continue_WriteSw.IsRunning && Continue_WriteSw.ElapsedMilliseconds < ContinueTime) {
+            lock (Locker)
+            {
+                if (Continue_WriteSw.IsRunning && Continue_WriteSw.ElapsedMilliseconds < ContinueTime)
+                {
                     if (ContinueWriteCaches == null) ContinueWriteCaches = msg;
                     else ContinueWriteCaches += msg + "\r\n";
                     ContinueCount++;
-                    if (ContinueCount > ContinueCountMax) {
+                    if (ContinueCount > ContinueCountMax)
+                    {
                         _Write();
                     }
                     return;
@@ -503,19 +649,26 @@ namespace EVEModX {
                 if (!Continue_WriteSw.IsRunning) Continue_WriteSw.Start();
                 ContinueWriteCaches = msg;
 
-                new Task(() => {
+                new Task(() =>
+                {
                     Thread.Sleep(ContinueTime);
                     _Write();
                 }).Start();
             }
         }
 
-        private static void _Write() {
-            if (ContinueWriteCaches != null) {
-                if (!File.Exists(ProjectFullName)) {
+        /// <summary>
+        /// writer initial
+        /// </summary>
+        private static void _Write()
+        {
+            if (ContinueWriteCaches != null)
+            {
+                if (!File.Exists(ProjectFullName))
+                {
                     if (!Directory.Exists(PATH))
                         Directory.CreateDirectory(PATH);
-                    
+
                 }
 
                 WRITER = new StreamWriter(ProjectFullName, true, Encoding.UTF8);
@@ -531,23 +684,28 @@ namespace EVEModX {
             Interlocked.Increment(ref AllWriteCount);
         }
 
-        public static void Debug(string msg) {
+
+        public static void Debug(string msg)
+        {
             msg = string.Format("[{0} {1}] : {2}", "Debug", DateTime.Now.ToString(), msg);
             Write(msg);
         }
 
-        public static void Info(string msg) {
+        public static void Info(string msg)
+        {
             msg = string.Format("[{0} {1}] : {2}", "Info", DateTime.Now.ToString(), msg);
             Write(msg);
         }
 
-        public static void Error(string msg) {
+        public static void Error(string msg)
+        {
             msg = string.Format("[{0} {1}] : {2}", "Error", DateTime.Now.ToString(), msg);
             Write(msg);
         }
     }
 }
 
-namespace B {
+namespace B
+{
 
 }

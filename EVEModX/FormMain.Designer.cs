@@ -54,9 +54,9 @@
             this.buttonRefreshModList = new System.Windows.Forms.Button();
             this.contextMenuStripIconRightClick = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showMainWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.groupBoxProcesses.SuspendLayout();
             this.groupBoxMod.SuspendLayout();
             this.contextMenuStripMods.SuspendLayout();
@@ -121,6 +121,7 @@
             this.columnModHeaderDescription,
             this.columnModHeaderVersion,
             this.columnModHeaderAuthor});
+            this.listView2.ContextMenuStrip = this.contextMenuStripMods;
             this.listView2.GridLines = true;
             this.listView2.Location = new System.Drawing.Point(6, 16);
             this.listView2.Name = "listView2";
@@ -201,7 +202,7 @@
             // ToolStripMenuItemExit
             // 
             this.ToolStripMenuItemExit.Name = "ToolStripMenuItemExit";
-            this.ToolStripMenuItemExit.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemExit.Size = new System.Drawing.Size(100, 22);
             this.ToolStripMenuItemExit.Text = "退出";
             this.ToolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click_1);
             // 
@@ -217,7 +218,7 @@
             // 
             this.ToolStripMenuItemDevMode.CheckOnClick = true;
             this.ToolStripMenuItemDevMode.Name = "ToolStripMenuItemDevMode";
-            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(137, 22);
             this.ToolStripMenuItemDevMode.Text = "Dev Mode";
             this.ToolStripMenuItemDevMode.Click += new System.EventHandler(this.ToolStripMenuItemDevMode_Click);
             // 
@@ -308,6 +309,11 @@
             this.showMainWindowToolStripMenuItem.Text = "显示/隐藏主窗口";
             this.showMainWindowToolStripMenuItem.Click += new System.EventHandler(this.showMainWindowToolStripMenuItem_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
+            // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
@@ -321,11 +327,6 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
             // 
             // FormMain
             // 

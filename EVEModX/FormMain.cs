@@ -17,7 +17,7 @@ namespace EVEModX
     public partial class FormMain : Form
     {
 
-        public const string emxversion = "v0.1.1";
+        public const string emxversion = "v0.3.1";
 
         [DllImport("Pyi.dll", EntryPoint = "InjectPythonCodeToPID", CallingConvention = CallingConvention.Cdecl)]
         public static extern int InjectPythonCodeToPID(int pid, string code);
@@ -37,10 +37,10 @@ namespace EVEModX
             {
                 case 0:
                     if (isChecked) ListItem.Checked = true;
-                    listView1.Items.Add(ListItem);
+                    listViewGameProcess.Items.Add(ListItem);
                     break;
                 case 1:
-                    listView1.Items.Clear();
+                    listViewGameProcess.Items.Clear();
                     break;
                 default:
                     break;
@@ -168,7 +168,7 @@ namespace EVEModX
                 }
                 ModInfo o = JsonConvert.DeserializeObject<ModInfo>(jsontext);
 
-                this.listView2.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
+                this.listViewMod.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
             }
 
             if (File.Exists("preferences.json") == false)
@@ -198,7 +198,7 @@ namespace EVEModX
             }
             foreach (var item in l)
             {
-                foreach (ListViewItem lvi3 in listView2.Items)
+                foreach (ListViewItem lvi3 in listViewMod.Items)
                 {
                     if (lvi3.SubItems[0].Text == item)
                     {
@@ -239,10 +239,11 @@ namespace EVEModX
             UpdateMod();
             checkBoxAutoRefresh.Checked = true;
             SizeChanged += new EventHandler(this.FormMain_SizeChanged);
+            listViewMod.ContextMenuStrip = null;
         }
 
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        private void listViewGameProcess_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
@@ -319,7 +320,7 @@ namespace EVEModX
         {
             //RaisePrivileges();
 
-            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0))
+            if ((listViewMod.CheckedItems.Count == 0) || (listViewGameProcess.CheckedItems.Count == 0))
             {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
@@ -329,7 +330,7 @@ namespace EVEModX
             Proc p = new Proc();
             int err = 0;
 
-            foreach (ListViewItem lvi1 in listView1.CheckedItems)
+            foreach (ListViewItem lvi1 in listViewGameProcess.CheckedItems)
             {
                 Logger.Debug("Inject path payload to " + lvi1.SubItems[0].Text + " using payload{" + pathPayload + "}\n");
                 int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), pathPayload.Replace("\\", "/"));
@@ -341,7 +342,7 @@ namespace EVEModX
                 }
                 checkret(ret);
 
-                foreach (ListViewItem lvi2 in listView2.CheckedItems)
+                foreach (ListViewItem lvi2 in listViewMod.CheckedItems)
                 {
 
                     string payload = "import " + lvi2.SubItems[0].Text + ";";
@@ -358,7 +359,7 @@ namespace EVEModX
 
         }
 
-        private void listView2_SelectedIndexChanged(object sender, EventArgs e)
+        private void listViewMod_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
@@ -458,11 +459,11 @@ namespace EVEModX
         {
             if (ToolStripMenuItemDevMode.CheckState == CheckState.Checked)
             {
-                listView2.ContextMenuStrip = contextMenuStripMods;
+                listViewMod.ContextMenuStrip = contextMenuStripMods;
             }
             else if (ToolStripMenuItemDevMode.CheckState == CheckState.Unchecked)
             {
-                listView2.ContextMenuStrip = null;
+                listViewMod.ContextMenuStrip = null;
             }
         }
 
@@ -474,14 +475,14 @@ namespace EVEModX
         private void ToolStripMenuItemReloadMods_Click(object sender, EventArgs e)
         {
             Proc p = new Proc();
-            if ((listView2.CheckedItems.Count == 0) || (listView1.CheckedItems.Count == 0))
+            if ((listViewMod.CheckedItems.Count == 0) || (listViewGameProcess.CheckedItems.Count == 0))
             {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
-            foreach (ListViewItem lvi1 in listView1.CheckedItems)
+            foreach (ListViewItem lvi1 in listViewGameProcess.CheckedItems)
             {
-                foreach (ListViewItem lvi2 in listView2.SelectedItems)
+                foreach (ListViewItem lvi2 in listViewMod.SelectedItems)
                 {
                     string reloadPayload = "reload(" + lvi2.SubItems[0].Text + ");";
                     Logger.Debug("Inject reload payload to pid " + lvi1.SubItems[0].Text + " using payload{" + reloadPayload + "}");
@@ -511,7 +512,7 @@ namespace EVEModX
         {
 
             var Mods = new List<string>();
-            foreach (ListViewItem lvi2 in listView2.CheckedItems)
+            foreach (ListViewItem lvi2 in listViewMod.CheckedItems)
             {
                 Mods.Add(lvi2.SubItems[0].Text);
             }
@@ -532,7 +533,7 @@ namespace EVEModX
         #region "tray icon processer"
         private void buttonRefreshModList_Click(object sender, EventArgs e)
         {
-            listView2.Items.Clear();
+            listViewMod.Items.Clear();
             UpdateMod();
         }
 
@@ -580,6 +581,10 @@ namespace EVEModX
                 WindowState = FormWindowState.Minimized;
 
             }
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
+
         }
     }
     #endregion

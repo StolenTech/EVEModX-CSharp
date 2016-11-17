@@ -26,11 +26,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.groupBoxProcesses = new System.Windows.Forms.GroupBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listViewGameProcess = new System.Windows.Forms.ListView();
             this.columnProcHeaderPid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnProcHeaderCharName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBoxMod = new System.Windows.Forms.GroupBox();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.listViewMod = new System.Windows.Forms.ListView();
             this.columnModHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnModHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnModHeaderVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -67,7 +67,7 @@
             // 
             // groupBoxProcesses
             // 
-            this.groupBoxProcesses.Controls.Add(this.listView1);
+            this.groupBoxProcesses.Controls.Add(this.listViewGameProcess);
             this.groupBoxProcesses.Location = new System.Drawing.Point(12, 30);
             this.groupBoxProcesses.Name = "groupBoxProcesses";
             this.groupBoxProcesses.Size = new System.Drawing.Size(304, 327);
@@ -76,22 +76,22 @@
             this.groupBoxProcesses.Text = "游戏进程列表";
             this.groupBoxProcesses.Enter += new System.EventHandler(this.groupBoxProcesses_Enter);
             // 
-            // listView1
+            // listViewGameProcess
             // 
-            this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listView1.CheckBoxes = true;
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewGameProcess.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listViewGameProcess.CheckBoxes = true;
+            this.listViewGameProcess.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnProcHeaderPid,
             this.columnProcHeaderCharName});
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(6, 16);
-            this.listView1.MultiSelect = false;
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(292, 305);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.listViewGameProcess.GridLines = true;
+            this.listViewGameProcess.Location = new System.Drawing.Point(6, 16);
+            this.listViewGameProcess.MultiSelect = false;
+            this.listViewGameProcess.Name = "listViewGameProcess";
+            this.listViewGameProcess.Size = new System.Drawing.Size(292, 305);
+            this.listViewGameProcess.TabIndex = 0;
+            this.listViewGameProcess.UseCompatibleStateImageBehavior = false;
+            this.listViewGameProcess.View = System.Windows.Forms.View.Details;
+            this.listViewGameProcess.SelectedIndexChanged += new System.EventHandler(this.listViewGameProcess_SelectedIndexChanged);
             // 
             // columnProcHeaderPid
             // 
@@ -105,7 +105,7 @@
             // 
             // groupBoxMod
             // 
-            this.groupBoxMod.Controls.Add(this.listView2);
+            this.groupBoxMod.Controls.Add(this.listViewMod);
             this.groupBoxMod.Location = new System.Drawing.Point(322, 30);
             this.groupBoxMod.Name = "groupBoxMod";
             this.groupBoxMod.Size = new System.Drawing.Size(543, 327);
@@ -113,23 +113,23 @@
             this.groupBoxMod.TabStop = false;
             this.groupBoxMod.Text = "Mod 列表";
             // 
-            // listView2
+            // listViewMod
             // 
-            this.listView2.CheckBoxes = true;
-            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewMod.CheckBoxes = true;
+            this.listViewMod.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnModHeaderName,
             this.columnModHeaderDescription,
             this.columnModHeaderVersion,
             this.columnModHeaderAuthor});
-            this.listView2.ContextMenuStrip = this.contextMenuStripMods;
-            this.listView2.GridLines = true;
-            this.listView2.Location = new System.Drawing.Point(6, 16);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(531, 305);
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.Details;
-            this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
+            this.listViewMod.ContextMenuStrip = this.contextMenuStripMods;
+            this.listViewMod.GridLines = true;
+            this.listViewMod.Location = new System.Drawing.Point(6, 16);
+            this.listViewMod.Name = "listViewMod";
+            this.listViewMod.Size = new System.Drawing.Size(531, 305);
+            this.listViewMod.TabIndex = 0;
+            this.listViewMod.UseCompatibleStateImageBehavior = false;
+            this.listViewMod.View = System.Windows.Forms.View.Details;
+            this.listViewMod.SelectedIndexChanged += new System.EventHandler(this.listViewMod_SelectedIndexChanged);
             // 
             // columnModHeaderName
             // 
@@ -190,6 +190,7 @@
             this.menuStrip1.Size = new System.Drawing.Size(877, 25);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // ToolStripMenuItemFile
             // 
@@ -366,11 +367,11 @@
 
         #endregion
         private System.Windows.Forms.GroupBox groupBoxProcesses;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listViewGameProcess;
         private System.Windows.Forms.ColumnHeader columnProcHeaderPid;
         private System.Windows.Forms.ColumnHeader columnProcHeaderCharName;
         private System.Windows.Forms.GroupBox groupBoxMod;
-        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ListView listViewMod;
         private System.Windows.Forms.ColumnHeader columnModHeaderName;
         private System.Windows.Forms.Timer timerRefreshProcess;
         private System.Windows.Forms.ColumnHeader columnModHeaderDescription;

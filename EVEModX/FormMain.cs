@@ -17,7 +17,7 @@ namespace EVEModX
     public partial class FormMain : Form
     {
 
-        public const string emxversion = "v0.3.1";
+        public const string emxversion = "v0.3.3";
 
         [DllImport("Pyi.dll", EntryPoint = "InjectPythonCodeToPID", CallingConvention = CallingConvention.Cdecl)]
         public static extern int InjectPythonCodeToPID(int pid, string code);
@@ -78,7 +78,7 @@ namespace EVEModX
             Logger.Debug("Env version: " + Environment.Version);
             Logger.Debug("Curr directory: " + Environment.CurrentDirectory);
             Logger.Debug("Curr user: " + Environment.UserName);
-            notifyIcon1.Icon = EVEModX.Properties.Resources.injection_icon;
+            notifyIconMain.Icon = EVEModX.Properties.Resources.Medical_Health_Syringe_injection;
         }
 
         /// <summary>
@@ -100,6 +100,7 @@ namespace EVEModX
                 {
                     if (item.MainWindowTitle.Length < 4)
                     {
+                        ret.Add(item.Id, "(尚未选定角色)");
                         continue;
                     }
                     ret.Add(item.Id, item.MainWindowTitle.Remove(0, 6));
@@ -562,7 +563,7 @@ namespace EVEModX
             }
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void notifyIconMain_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             showWindow();
         }

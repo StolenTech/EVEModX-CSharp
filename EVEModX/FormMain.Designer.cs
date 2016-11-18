@@ -56,7 +56,7 @@
             this.showMainWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBoxProcesses.SuspendLayout();
             this.groupBoxMod.SuspendLayout();
             this.contextMenuStripMods.SuspendLayout();
@@ -322,12 +322,12 @@
             this.quitToolStripMenuItem.Text = "退出";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
-            // notifyIcon1
+            // notifyIconMain
             // 
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStripIconRightClick;
-            this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            this.notifyIconMain.ContextMenuStrip = this.contextMenuStripIconRightClick;
+            this.notifyIconMain.Text = "notifyIconMain";
+            this.notifyIconMain.Visible = true;
+            this.notifyIconMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIconMain_MouseDoubleClick);
             // 
             // FormMain
             // 
@@ -396,7 +396,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStripIconRightClick;
         private System.Windows.Forms.ToolStripMenuItem showMainWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }

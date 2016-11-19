@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
-
+using Microsoft.Win32;
+using System.IO.Compression;
 
 namespace EVEModX
 {
@@ -25,6 +26,13 @@ namespace EVEModX
         public delegate void updatelistDeleg(ref ListViewItem ListItem, ref int option, bool isChecked = false);
 
         private FormWindowState currentStatus = FormWindowState.Normal;
+
+        /// <summary>
+        /// This dictionary is used to stor each mod is zip package or directory.
+        /// False = Directory,
+        /// True = zip file.
+        /// </summary>
+        private Dictionary<string, bool> m_ModTypeList = new Dictionary<string, bool>();
 
         /// <summary>
         /// Async update listview
@@ -148,29 +156,10 @@ namespace EVEModX
                 MessageBox.Show("Mod 文件夹未找到，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(50);
             }
-            var d = Directory.GetDirectories("mods");
+            string[] d = Directory.GetDirectories("mods");
 
-            foreach (var e in d)
-            {
-
-                if (File.Exists(e + "\\info.json") == false)
-                {
-                    //Logger.Error(e + " info.json not found, exit with code 51");
-                    // MessageBox.Show(e + "\\info.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //Environment.Exit(51);
-                    continue;
-                }
-                string jsontext = File.ReadAllText(e + "\\info.json");
-                if (isValidJson(jsontext) == false)
-                {
-                    Logger.Error(e + " info.json cannot be parsed, exit with code 52");
-                    MessageBox.Show(e + "\\info.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(52);
-                }
-                ModInfo o = JsonConvert.DeserializeObject<ModInfo>(jsontext);
-
-                this.listViewMod.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
-            }
+            getModsFromFolder(d);
+            getModsFromZipFiles();
 
             if (File.Exists("preferences.json") == false)
             {
@@ -208,6 +197,77 @@ namespace EVEModX
                 }
             }
         }
+        
+        /// <summary>
+        /// Get mod info from all directories.
+        /// </summary>
+        /// <param name="d">directories</param>
+        private void getModsFromFolder(string[] d)
+        {
+            foreach (var e in d)
+            {
+                if (File.Exists(e + "\\info.json") == false)
+                {
+                    Logger.Error(e + " info.json not found.");
+                    // MessageBox.Show(e + "\\info.json 缺失，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //Environment.Exit(51);
+                    continue;
+                }
+                string jsontext = File.ReadAllText(e + "\\info.json");
+                if (isValidJson(jsontext) == false)
+                {
+                    Logger.Error(e + " info.json cannot be parsed.");
+                    //MessageBox.Show(e + "\\info.json 无法解析，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //Environment.Exit(52);
+                    continue;
+                }
+                ModInfo o = JsonConvert.DeserializeObject<ModInfo>(jsontext);
+                listViewMod.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
+                m_ModTypeList.Add(e.Substring(5), false);
+            }
+        }
+
+        
+        /// <summary>
+        /// Get Mods information from zip file
+        /// </summary>
+        private void getModsFromZipFiles()
+        {
+            var sFiles = (new DirectoryInfo("mods")).GetFiles("*.zip");
+            foreach (var zFile in sFiles)
+            {
+                var zipToOpen = new FileStream(zFile.FullName, FileMode.Open);
+                var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read);
+                string ModName = getModNameFromFileName(zFile);
+                if (!m_ModTypeList.ContainsKey(ModName))
+                {
+                    try
+                    {
+                        Stream tStream = archive.GetEntry(ModName + "/info.json").Open();
+                        StreamReader SR = new StreamReader(tStream, Encoding.UTF8, false);
+                        string T_INF = SR.ReadToEnd();
+                        ModInfo o = JsonConvert.DeserializeObject<ModInfo>(T_INF);
+                        listViewMod.Items.Add(new ListViewItem(new string[] { ModName, o.description, o.version, o.author }));
+                        m_ModTypeList.Add(ModName, true);
+                    }catch (Exception ex)
+                    {
+                        Logger.Error(ex.Message);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get mod name from file info
+        /// </summary>
+        /// <param name="fi"></param>
+        /// <returns></returns>
+        private string getModNameFromFileName(FileInfo fi)
+        {
+            return fi.Name.Replace(fi.Extension, "");
+        }
+       
+            
 
         /// <summary>
         /// Overrite existing or non-existing preferences.json
@@ -224,6 +284,7 @@ namespace EVEModX
             }
             catch (Exception e)
             {
+                Logger.Error(e.ToString());
                 return false;
             }
             return true;
@@ -331,6 +392,7 @@ namespace EVEModX
             Proc p = new Proc();
             int err = 0;
 
+            // TODO: INJECT Package
             foreach (ListViewItem lvi1 in listViewGameProcess.CheckedItems)
             {
                 Logger.Debug("Inject path payload to " + lvi1.SubItems[0].Text + " using payload{" + pathPayload + "}\n");
@@ -345,12 +407,10 @@ namespace EVEModX
 
                 foreach (ListViewItem lvi2 in listViewMod.CheckedItems)
                 {
-
                     string payload = "import " + lvi2.SubItems[0].Text + ";";
                     Logger.Debug("Inject pid " + lvi1.SubItems[0].Text + " using payload{" + payload + "}");
                     ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), payload.Replace("\\", "/"));
                     checkret(ret);
-
                 }
             }
             if (err == 0)

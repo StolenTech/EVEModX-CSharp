@@ -59,8 +59,8 @@
             this.labelP.Size = new System.Drawing.Size(507, 120);
             this.labelP.TabIndex = 3;
             this.labelP.Text = "EVEModX 是一个不在修改本地文件的情况下，通过 Mod 改变 EVE Online 客户端的功能特性的框架。\r\n\r\n使用它意味着你已授权本框架以及 Mod " +
-    "对你的 EVE Online 客户端程序进行 Monkey-Patch，此为严重违反 EULA 的行为，由此产生的后果均由你个人承担。\r\n\r\n用户群： 2220" +
-    "81992";
+    "对你的 EVE Online 客户端程序进行 Monkey-Patch，此为严重违反 EULA 的行为，由此产生的后果均由你个人承担。\r\n\r\n用户群： 4942" +
+    "45573";
             // 
             // labelDev
             // 
@@ -74,11 +74,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(176, 304);
+            this.label1.Location = new System.Drawing.Point(235, 298);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(362, 17);
+            this.label1.Size = new System.Drawing.Size(303, 17);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Copyright 2016, the EVEModX developers, all right reserved.";
+            this.label1.Text = "Licensed under the GNU General Public License v3.";
             // 
             // linkLabel1
             // 

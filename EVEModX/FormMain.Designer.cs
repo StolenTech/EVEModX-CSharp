@@ -325,7 +325,7 @@
             // notifyIconMain
             // 
             this.notifyIconMain.ContextMenuStrip = this.contextMenuStripIconRightClick;
-            this.notifyIconMain.Text = "notifyIconMain";
+            this.notifyIconMain.Text = "EVEModX Framework";
             this.notifyIconMain.Visible = true;
             this.notifyIconMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIconMain_MouseDoubleClick);
             // 

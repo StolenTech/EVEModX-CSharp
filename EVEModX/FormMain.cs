@@ -550,16 +550,19 @@ namespace EVEModX
 
         private void FormMain_SizeChanged(object sender, EventArgs e)
         {
-            if (WindowState == FormWindowState.Minimized)
+            if (!ToolStripMenuItemDevMode.Checked)
             {
-                Hide();
-                Visible = false;
-                ShowInTaskbar = false;
-            }
-            else
-            {
-                Visible = true;
-                ShowInTaskbar = true;
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    Hide();
+                    Visible = false;
+                    ShowInTaskbar = false;
+                }
+                else
+                {
+                    Visible = true;
+                    ShowInTaskbar = true;
+                }
             }
         }
 

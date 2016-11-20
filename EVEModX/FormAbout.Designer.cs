@@ -55,17 +55,18 @@
             // labelDev
             // 
             this.labelDev.AutoSize = true;
-            this.labelDev.Location = new System.Drawing.Point(31, 241);
+            this.labelDev.Location = new System.Drawing.Point(34, 252);
             this.labelDev.Name = "labelDev";
             this.labelDev.Size = new System.Drawing.Size(224, 17);
             this.labelDev.TabIndex = 4;
             this.labelDev.Text = "对于 Mod 开发者，开发文档正在完善中";
+            this.labelDev.Click += new System.EventHandler(this.labelDev_Click);
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(235, 298);
+            this.label1.Location = new System.Drawing.Point(268, 337);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(303, 17);
             this.label1.TabIndex = 5;
@@ -75,7 +76,7 @@
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(31, 268);
+            this.linkLabel1.Location = new System.Drawing.Point(31, 307);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(131, 17);
             this.linkLabel1.TabIndex = 6;
@@ -91,12 +92,11 @@
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox1.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.textBox1.Location = new System.Drawing.Point(34, 93);
+            this.textBox1.Location = new System.Drawing.Point(34, 84);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(504, 161);
+            this.textBox1.Size = new System.Drawing.Size(537, 157);
             this.textBox1.TabIndex = 7;
             this.textBox1.TabStop = false;
             this.textBox1.Text = resources.GetString("textBox1.Text");
@@ -105,7 +105,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(558, 337);
+            this.ClientSize = new System.Drawing.Size(591, 376);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);

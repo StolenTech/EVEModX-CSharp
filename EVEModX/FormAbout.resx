@@ -119,14 +119,11 @@
   </resheader>
   <data name="textBox1.Text" xml:space="preserve">
     <value>EVEModX 是一个不在修改本地文件的情况下，通过 Mod 改变 EVE Online 客户端的功能特性的框架。
-
 使用它意味着你已授权本框架以及 Mod 对你的 EVE Online 客户端程序进行 Monkey-Patch，此为严重违反 EULA 的行为，由此产生的后果均由你个人承担。
 
 用户群： 494245573
 
-Material related to EVE-Online is used with limited permission of CCP Games hf. No official affiliation or endorsement by CCP Games hf is stated or implied.
-
-</value>
+Material related to EVE-Online is used with limited permission of CCP Games hf. No official affiliation or endorsement by CCP Games hf is stated or implied.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

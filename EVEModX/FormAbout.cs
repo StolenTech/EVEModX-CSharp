@@ -22,5 +22,9 @@ namespace EVEModX {
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Process.Start("https://evemodx.com");
         }
+
+        private void labelDev_Click(object sender, EventArgs e) {
+
+        }
     }
 }

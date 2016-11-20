@@ -154,9 +154,15 @@ namespace EVEModX
 
             if (!Directory.Exists("mods"))
             {
-                Logger.Error("Mod dir not found, exit with code 50");
-                MessageBox.Show("Mod 文件夹未找到，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(50);
+                try
+                {
+                    Directory.CreateDirectory("mods");
+                }catch (Exception e)
+                {
+                    Logger.Error(e.Message);
+                    MessageBox.Show(e.Message + ",程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(e.HResult);
+                }
             }
             string[] d = Directory.GetDirectories("mods");
 

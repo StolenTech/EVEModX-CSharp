@@ -26,10 +26,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAbout));
             this.labelH = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
-            this.labelP = new System.Windows.Forms.Label();
             this.labelDev = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // labelH
@@ -52,16 +52,6 @@
             this.labelVersion.TabIndex = 2;
             this.labelVersion.Text = "版本";
             // 
-            // labelP
-            // 
-            this.labelP.Location = new System.Drawing.Point(31, 103);
-            this.labelP.Name = "labelP";
-            this.labelP.Size = new System.Drawing.Size(507, 120);
-            this.labelP.TabIndex = 3;
-            this.labelP.Text = "EVEModX 是一个不在修改本地文件的情况下，通过 Mod 改变 EVE Online 客户端的功能特性的框架。\r\n\r\n使用它意味着你已授权本框架以及 Mod " +
-    "对你的 EVE Online 客户端程序进行 Monkey-Patch，此为严重违反 EULA 的行为，由此产生的后果均由你个人承担。\r\n\r\n用户群： 4942" +
-    "45573";
-            // 
             // labelDev
             // 
             this.labelDev.AutoSize = true;
@@ -73,6 +63,7 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(235, 298);
             this.label1.Name = "label1";
@@ -82,6 +73,7 @@
             // 
             // linkLabel1
             // 
+            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(31, 268);
             this.linkLabel1.Name = "linkLabel1";
@@ -91,15 +83,33 @@
             this.linkLabel1.Text = "https://evemodx.com";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox1.ImeMode = System.Windows.Forms.ImeMode.Disable;
+            this.textBox1.Location = new System.Drawing.Point(34, 93);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(504, 161);
+            this.textBox1.TabIndex = 7;
+            this.textBox1.TabStop = false;
+            this.textBox1.Text = resources.GetString("textBox1.Text");
+            // 
             // FormAbout
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(558, 337);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelDev);
-            this.Controls.Add(this.labelP);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.labelH);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -117,9 +127,9 @@
         #endregion
         private System.Windows.Forms.Label labelH;
         private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.Label labelP;
         private System.Windows.Forms.Label labelDev;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

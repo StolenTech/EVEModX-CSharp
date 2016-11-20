@@ -16,7 +16,7 @@ namespace EVEModX {
         }
 
         private void FormAbout_Load(object sender, EventArgs e) {
-            labelVersion.Text = labelVersion.Text + " " + FormMain.emxversion;
+            labelVersion.Text = labelVersion.Text + " " + Application.ProductVersion;
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {

@@ -221,6 +221,7 @@
             this.ToolStripMenuItemDevMode.Name = "ToolStripMenuItemDevMode";
             this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(137, 22);
             this.ToolStripMenuItemDevMode.Text = "Dev Mode";
+            this.ToolStripMenuItemDevMode.CheckStateChanged += new System.EventHandler(this.ToolStripMenuItemDevMode_CheckStateChanged);
             this.ToolStripMenuItemDevMode.Click += new System.EventHandler(this.ToolStripMenuItemDevMode_Click);
             // 
             // ToolStripMenuItemHelp

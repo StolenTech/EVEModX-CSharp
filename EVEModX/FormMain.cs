@@ -19,8 +19,6 @@ namespace EVEModX
     public partial class FormMain : Form
     {
 
-        public const string emxversion = "v0.3.3";
-
         [DllImport("Pyi.dll", EntryPoint = "InjectPythonCodeToPID", CallingConvention = CallingConvention.Cdecl)]
         public static extern int InjectPythonCodeToPID(int pid, string code);
 
@@ -84,7 +82,7 @@ namespace EVEModX
         {
             InitializeComponent();
             Logger.Debug("Init\r\n");
-            Logger.Debug("Version: " + emxversion);
+            Logger.Debug("Version: " + Application.ProductVersion);
             Logger.Debug("OS: " + Environment.OSVersion);
             Logger.Debug("Env version: " + Environment.Version);
             Logger.Debug("Curr directory: " + Environment.CurrentDirectory);

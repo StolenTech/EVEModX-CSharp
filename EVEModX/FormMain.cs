@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.IO.Compression;
+using Microsoft.VisualBasic;
 
 namespace EVEModX
 {
@@ -26,6 +27,8 @@ namespace EVEModX
         public delegate void updatelistDeleg(ref ListViewItem ListItem, ref int option, bool isChecked = false);
 
         private FormWindowState currentStatus = FormWindowState.Normal;
+
+        private bool isInDevMode = false;
 
         /// <summary>
         /// This dictionary is used to stor each mod is zip package or directory.
@@ -158,7 +161,9 @@ namespace EVEModX
             }
             string[] d = Directory.GetDirectories("mods");
 
-            getModsFromFolder(d);
+            if (isInDevMode)
+                getModsFromFolder(d);
+
             getModsFromZipFiles();
 
             if (File.Exists("preferences.json") == false)
@@ -267,8 +272,6 @@ namespace EVEModX
             return fi.Name.Replace(fi.Extension, "");
         }
        
-            
-
         /// <summary>
         /// Overrite existing or non-existing preferences.json
         /// </summary>
@@ -298,12 +301,17 @@ namespace EVEModX
         private void FormMain_Load(object sender, EventArgs e)
         {
             Logger.Debug("FormMain loaded");
+            listViewMod.ContextMenuStrip = null;
+            if (Directory.Exists("devmod"))
+            {
+                isInDevMode = true;
+                ToolStripMenuItemDevMode.Checked = true;
+                ToolStripMenuItemDevMode.CheckState = CheckState.Checked;
+            }
             UpdateMod();
             checkBoxAutoRefresh.Checked = true;
             SizeChanged += new EventHandler(this.FormMain_SizeChanged);
-            listViewMod.ContextMenuStrip = null;
         }
-
 
         private void listViewGameProcess_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -387,38 +395,163 @@ namespace EVEModX
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
-            string pathPayload = "import sys;sys.path.append('" + Environment.CurrentDirectory + "\\mods\\');";
-
             Proc p = new Proc();
-            int err = 0;
-
             // TODO: INJECT Package
-            foreach (ListViewItem lvi1 in listViewGameProcess.CheckedItems)
-            {
-                Logger.Debug("Inject path payload to " + lvi1.SubItems[0].Text + " using payload{" + pathPayload + "}\n");
-                int ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), pathPayload.Replace("\\", "/"));
-                if (ret == 5)
-                {
-                    MessageBox.Show("检测到游戏进程变化，游戏已退出？", "Caution", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    err = 1;
-                    continue;
-                }
-                checkret(ret);
+            // TODO: New sub to inject traditional 
 
-                foreach (ListViewItem lvi2 in listViewMod.CheckedItems)
-                {
-                    string payload = "import " + lvi2.SubItems[0].Text + ";";
-                    Logger.Debug("Inject pid " + lvi1.SubItems[0].Text + " using payload{" + payload + "}");
-                    ret = p.Inject(int.Parse(lvi1.SubItems[0].Text), payload.Replace("\\", "/"));
-                    checkret(ret);
-                }
-            }
-            if (err == 0)
+            List<string> FolderMods;
+            List<string> ZipMods;
+            Dictionary<string, List<PackageException>> DE1 = new Dictionary<string, List<PackageException>>();
+            Dictionary<string, List<PackageException>> DE2 = new Dictionary<string, List<PackageException>>();
+            GetMods(out FolderMods, out ZipMods);
+
+            if (isInDevMode)
+                DE1 = writeUnpackagedMod(p, FolderMods);
+
+            DE2 = writePackagedMod(p, ZipMods);
+
+            if (DE1.Count == 0 && DE2.Count == 0)
             {
                 MessageBox.Show("写入成功!", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
+            else
+            {
+                string errinfo = "Error in writing mods:\r\n";
+                errinfo += getErrinfo(DE1) + getErrinfo(DE2);
+                Logger.Error(errinfo);
+                MessageBox.Show(errinfo, "Error in injection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
 
+            //Logger.Error(ex.Message + ex.GetType().ToString());
+            //MessageBox.Show("写入失败,详细信息：" + ex.Message);
         }
+
+        private string getErrinfo(Dictionary<string, List<PackageException>> err)
+        {
+            string pidErrStr = "";
+            foreach (KeyValuePair<string, List<PackageException>> eItem in err)
+            {
+                pidErrStr += eItem.Key + ": \r\n";
+                foreach (PackageException peItem in eItem.Value)
+                {
+                    pidErrStr += "\t" + peItem.pgName;
+                    if (isInDevMode)
+                    {
+                        pidErrStr += ", From: " + peItem.pgType + " exception: " + peItem.e.Message;
+                    }
+                    pidErrStr += "\r\n";
+                }
+            }
+            return pidErrStr;
+        }
+
+        private void GetMods(out List<string> fdm, out List<string>zm)
+        {
+            fdm = new List<string>();
+            zm = new List<string>();
+            foreach(ListViewItem LVItem in listViewMod.CheckedItems)
+            {
+                var modname = LVItem.SubItems[0].Text;
+                if (m_ModTypeList[modname] == false)
+                {
+                    fdm.Add(modname);
+                }else
+                {   
+                    zm.Add(modname);
+                }
+            }
+        }
+
+        private Dictionary<string, List<PackageException>> writeUnpackagedMod(Proc p, List<string> enabledMods)
+        {
+            Dictionary<string, List<PackageException>> ErrRetDict = new Dictionary<string, List<PackageException>>();
+            string pathPayload = "import sys;sys.path.append('" + Environment.CurrentDirectory + "\\mods\\');";
+            foreach (ListViewItem lvi1 in listViewGameProcess.CheckedItems)
+            {
+                List<PackageException> PEList = new List<PackageException>();
+                int procPID = int.Parse(lvi1.SubItems[0].Text);
+                Logger.Debug("Inject path payload to " + procPID.ToString() + " using payload{" + pathPayload + "}\n");
+                int ret = p.Inject(procPID, pathPayload.Replace("\\", "/"));
+                if (ret == 5)
+                {
+                    MessageBox.Show("检测到游戏进程变化，游戏已退出？", "Caution", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    throw new FileNotFoundException("Process not found:\r\n     onExecuting writeUnpackagedMod(" + procPID.ToString() + ", " + pathPayload.Replace("\\", "/") + ");");
+                }
+                else
+                {
+                    try
+                    {
+                        checkret(ret);
+                    }
+                    catch (Exception ex)
+                    {
+                        PEList.Add(new PackageException("on injection dir path error", "S", ex));
+                        if (PEList.Count > 0) ErrRetDict.Add(procPID.ToString(), PEList);
+                        continue;
+                    }
+                }
+                foreach (string modname in enabledMods)
+                {
+                    string payload = "import " + modname + ";";
+                    Logger.Debug("Inject pid " + procPID + " using payload{" + payload + "}");
+                    ret = p.Inject(procPID, payload.Replace("\\", "/"));
+                    try
+                    {
+                        checkret(ret);
+                    }
+                    catch (Exception ex)
+                    {
+                        PEList.Add(new PackageException(modname, "P", ex));
+                    }
+                }
+                if (PEList.Count > 0) ErrRetDict.Add(procPID.ToString(), PEList);
+            }
+            return ErrRetDict;
+        }
+
+        private Dictionary<string, List<PackageException>> writePackagedMod(Proc p, List<string> enabledMods)
+        {
+            Dictionary<string, List<PackageException>> ErrRetDict = new Dictionary<string, List<PackageException>>();
+            foreach (ListViewItem lvi1 in listViewGameProcess.CheckedItems)
+            {
+                List<PackageException> PEList = new List<PackageException>();
+                int procPID = int.Parse(lvi1.SubItems[0].Text);
+                int ret = 0;
+                StringBuilder sb = new StringBuilder();
+                foreach (string modname in enabledMods)
+                {
+                    sb.AppendFormat("import sys;sys.path.append('{0}/{1}.zip');import {2};", Environment.CurrentDirectory.Replace("\\", "/"), modname, modname);
+                    ret = p.Inject(procPID, sb.ToString());
+                    try
+                    {
+                        checkret(ret);
+                    }
+                    catch (Exception ex)
+                    {
+                        PEList.Add(new PackageException(modname, "Z", ex));
+                    }
+                    sb.Clear();
+                }
+                if (PEList.Count > 0) ErrRetDict.Add(procPID.ToString(), PEList);
+            }
+            return ErrRetDict;
+        }
+        
+
+        class PackageException
+        {
+            public string pgName { get; set; }
+            public string pgType { get; set; }
+            public Exception e { get; set; }
+
+            public PackageException(string modname, string type, Exception ex)
+            {
+                pgName = modname;
+                pgType = type;
+                e = (Exception)((ICloneable)ex).Clone();
+            }
+        }
+
 
         private void listViewMod_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -454,52 +587,62 @@ namespace EVEModX
                 case 1:
                     Logger.Error("OpenProcessToken or hModule Failed, code 1");
                     MessageBox.Show("OpenProcessToken or hModule Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(1);
+                    throw new UnauthorizedAccessException("OpenProcessToken or hModule Failed, code 1");
+                    //Environment.Exit(1);
                     break;
                 case 2:
                     Logger.Error("LookupPrivilegeValue or PyGILState_Ensure Failed, code 2");
                     MessageBox.Show("LookupPrivilegeValue or PyGILState_Ensure Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(2);
+                    throw new UnauthorizedAccessException("LookupPrivilegeValue or PyGILState_Ensure Failed, code 2");
+                    //Environment.Exit(2);
                     break;
                 case 3:
                     Logger.Error("AdjustTokenPrivileges or PyRun_SimpleString Failed, code 3");
                     MessageBox.Show("AdjustTokenPrivileges or PyRun_SimpleString Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(3);
+                    throw new UnauthorizedAccessException("AdjustTokenPrivileges or PyRun_SimpleString Failed, code 3");
+                    //Environment.Exit(3);
                     break;
                 case 4:
                     Logger.Error("PyGILState_Release Failed, code 4");
                     MessageBox.Show("PyGILState_Release Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(4);
+                    throw new InvalidOperationException("PyGILState_Release Failed, code 4");
+                    //Environment.Exit(4);
                     break;
                 case 5:
                     Logger.Error("WriteProcessMemory Failed, code 5");
                     MessageBox.Show("WriteProcessMemory Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(5);
+                    throw new InvalidOperationException("WriteProcessMemory Failed, code 5");
+                    //Environment.Exit(5);
                     break;
                 case 6:
                     Logger.Error("WriteProcessMemory2 Failed, code 6");
                     MessageBox.Show("WriteProcessMemory2 Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(6);
+                    throw new InvalidOperationException("WriteProcessMemory2 Failed, code 6");
+                    //Environment.Exit(6);
                     break;
                 case 7:
                     Logger.Error("CreateRemoteThread Failed, code 7");
                     MessageBox.Show("CreateRemoteThread Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(7);
+                    throw new InvalidOperationException("CreateRemoteThread Failed, code 7");
+                    //Environment.Exit(7);
                     break;
                 case 8:
                     Logger.Error("WaitForSingleObject Failed, code 8");
                     MessageBox.Show("WaitForSingleObject Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(8);
+                    throw new InvalidOperationException("WaitForSingleObject Failed, code 8");
+                    //Environment.Exit(8);
                     break;
                 case 9:
                     Logger.Error("GetExitCodeThread Failed, code 9");
                     MessageBox.Show("GetExitCodeThread Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(9);
+                    throw new InvalidDataException("GetExitCodeThread Failed, code 9");
+                    //Environment.Exit(9);
                     break;
                 case 10:
                     Logger.Error("code 10");
                     MessageBox.Show("exitCode 10", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Environment.Exit(10);
+                    throw new Exception("Unknown Exception, code 10");
+                    //Environment.Exit(10);
                     break;
                 default:
                     break;
@@ -518,13 +661,24 @@ namespace EVEModX
         /// <param name="e"></param>
         private void ToolStripMenuItemDevMode_Click(object sender, EventArgs e)
         {
-            if (ToolStripMenuItemDevMode.CheckState == CheckState.Checked)
+            var t = (ToolStripMenuItem)sender;
+
+            if (t.Checked)
             {
-                listViewMod.ContextMenuStrip = contextMenuStripMods;
-            }
-            else if (ToolStripMenuItemDevMode.CheckState == CheckState.Unchecked)
-            {
-                listViewMod.ContextMenuStrip = null;
+                string input = Interaction.InputBox("Please input dev mod pre-shared key:", "Enable DEV mode");
+                if (input != "_EveModx#devModeEnable")
+                {
+                    e = null;
+                    t.Checked = false;
+                    isInDevMode = false;
+                    return;
+                }
+                else
+                {
+                    isInDevMode = true;
+                    if (!Directory.Exists("devmod"))
+                        Directory.CreateDirectory("devmod");
+                }
             }
         }
 
@@ -649,6 +803,18 @@ namespace EVEModX
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
 
+        }
+
+        private void ToolStripMenuItemDevMode_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (ToolStripMenuItemDevMode.CheckState == CheckState.Checked)
+            {
+                listViewMod.ContextMenuStrip = contextMenuStripMods;
+            }
+            else if (ToolStripMenuItemDevMode.CheckState == CheckState.Unchecked)
+            {
+                listViewMod.ContextMenuStrip = null;
+            }
         }
     }
     #endregion

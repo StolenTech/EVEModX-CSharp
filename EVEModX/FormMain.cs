@@ -518,9 +518,12 @@ namespace EVEModX
                 int procPID = int.Parse(lvi1.SubItems[0].Text);
                 int ret = 0;
                 StringBuilder sb = new StringBuilder();
+                StringBuilder sb2 = new StringBuilder();
                 foreach (string modname in enabledMods)
                 {
-                    sb.AppendFormat("import sys;sys.path.append('{0}/{1}.zip');import {2};", Environment.CurrentDirectory.Replace("\\", "/"), modname, modname);
+                    sb.AppendFormat("import sys;sys.path.append('{0}/mods/{1}.zip');import {2};", Environment.CurrentDirectory.Replace("\\", "/"), modname, modname);
+                    sb2.AppendFormat("Inject ZIP Package: PID={0}, mod={1}, payload={2}", procPID, modname, sb.ToString());
+                    Logger.Debug(sb2.ToString());
                     ret = p.Inject(procPID, sb.ToString());
                     try
                     {

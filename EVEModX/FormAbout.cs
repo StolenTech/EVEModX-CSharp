@@ -16,6 +16,7 @@ namespace EVEModX {
         }
 
         private void FormAbout_Load(object sender, EventArgs e) {
+
             labelVersion.Text = labelVersion.Text + " " + Application.ProductVersion;
         }
 

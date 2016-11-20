@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Win32;
 using System.IO.Compression;
 using Microsoft.VisualBasic;
 
@@ -153,7 +152,7 @@ namespace EVEModX
         {
             Logger.Debug("Updating mods list");
 
-            if (Directory.Exists("mods") == false)
+            if (!Directory.Exists("mods"))
             {
                 Logger.Error("Mod dir not found, exit with code 50");
                 MessageBox.Show("Mod 文件夹未找到，程序退出", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -166,7 +165,7 @@ namespace EVEModX
 
             getModsFromZipFiles();
 
-            if (File.Exists("preferences.json") == false)
+            if (!File.Exists("preferences.json"))
             {
                 if (!writeNewJson())
                 {
@@ -176,7 +175,7 @@ namespace EVEModX
                 }
             }
             string jsontext2 = File.ReadAllText("preferences.json");
-            if (isValidJson(jsontext2) == false)
+            if (!isValidJson(jsontext2))
             {
                 if (!writeNewJson())
                 {

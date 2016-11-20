@@ -46,6 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Injector.ico</ApplicationIcon>
@@ -70,7 +71,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -133,10 +133,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Injector.ico" />
+    <Content Include="Resources\Injector_small.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /t:winexe /targetplatform:4 /out:"$(TargetDir)EveModx_Merged.exe" "$(TargetPath)" "$(TargetDir)Newtonsoft.Json.dll"</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /t:winexe /targetplatform:4 /out:"$(ProjectDir)Merged\EveModx_Merged.exe" "$(TargetPath)" "$(TargetDir)Newtonsoft.Json.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

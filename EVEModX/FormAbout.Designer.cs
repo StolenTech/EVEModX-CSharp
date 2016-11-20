@@ -26,7 +26,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAbout));
             this.labelH = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
-            this.labelDev = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -51,16 +50,6 @@
             this.labelVersion.Size = new System.Drawing.Size(37, 20);
             this.labelVersion.TabIndex = 2;
             this.labelVersion.Text = "版本";
-            // 
-            // labelDev
-            // 
-            this.labelDev.AutoSize = true;
-            this.labelDev.Location = new System.Drawing.Point(34, 252);
-            this.labelDev.Name = "labelDev";
-            this.labelDev.Size = new System.Drawing.Size(224, 17);
-            this.labelDev.TabIndex = 4;
-            this.labelDev.Text = "对于 Mod 开发者，开发文档正在完善中";
-            this.labelDev.Click += new System.EventHandler(this.labelDev_Click);
             // 
             // label1
             // 
@@ -92,11 +81,12 @@
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox1.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.textBox1.Location = new System.Drawing.Point(34, 84);
+            this.textBox1.Location = new System.Drawing.Point(34, 99);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(537, 157);
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(537, 191);
             this.textBox1.TabIndex = 7;
             this.textBox1.TabStop = false;
             this.textBox1.Text = resources.GetString("textBox1.Text");
@@ -109,15 +99,15 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.labelDev);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.labelH);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.MinimumSize = new System.Drawing.Size(371, 311);
             this.Name = "FormAbout";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "关于";
+            this.Icon = EVEModX.Properties.Resources.Injector;
             this.Load += new System.EventHandler(this.FormAbout_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -127,7 +117,6 @@
         #endregion
         private System.Windows.Forms.Label labelH;
         private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.Label labelDev;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.TextBox textBox1;

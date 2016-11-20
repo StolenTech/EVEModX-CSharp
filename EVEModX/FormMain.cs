@@ -89,7 +89,7 @@ namespace EVEModX
             Logger.Debug("Env version: " + Environment.Version);
             Logger.Debug("Curr directory: " + Environment.CurrentDirectory);
             Logger.Debug("Curr user: " + Environment.UserName);
-            notifyIconMain.Icon = EVEModX.Properties.Resources.Medical_Health_Syringe_injection;
+            notifyIconMain.Icon = EVEModX.Properties.Resources.Injector;
         }
 
         /// <summary>
@@ -396,13 +396,12 @@ namespace EVEModX
                 return;
             }
             Proc p = new Proc();
-            // TODO: INJECT Package
-            // TODO: New sub to inject traditional 
 
             List<string> FolderMods;
             List<string> ZipMods;
             Dictionary<string, List<PackageException>> DE1 = new Dictionary<string, List<PackageException>>();
             Dictionary<string, List<PackageException>> DE2 = new Dictionary<string, List<PackageException>>();
+
             GetMods(out FolderMods, out ZipMods);
 
             if (isInDevMode)
@@ -421,11 +420,13 @@ namespace EVEModX
                 Logger.Error(errinfo);
                 MessageBox.Show(errinfo, "Error in injection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-
-            //Logger.Error(ex.Message + ex.GetType().ToString());
-            //MessageBox.Show("写入失败,详细信息：" + ex.Message);
         }
 
+        /// <summary>
+        /// get error string from error dictionary
+        /// </summary>
+        /// <param name="err">A dictionary containing which process had which exception</param>
+        /// <returns>error description string for the process</returns>
         private string getErrinfo(Dictionary<string, List<PackageException>> err)
         {
             string pidErrStr = "";
@@ -445,6 +446,11 @@ namespace EVEModX
             return pidErrStr;
         }
 
+        /// <summary>
+        /// Get Mods to Injection
+        /// </summary>
+        /// <param name="fdm">list to save folder-based mods</param>
+        /// <param name="zm">list to save zip-based mods</param>
         private void GetMods(out List<string> fdm, out List<string>zm)
         {
             fdm = new List<string>();
@@ -462,6 +468,12 @@ namespace EVEModX
             }
         }
 
+        /// <summary>
+        /// Write Un-packaged mods (Directory-based mods)
+        /// </summary>
+        /// <param name="p">Process</param>
+        /// <param name="enabledMods">Enabled Mods List</param>
+        /// <returns>Exceptions during injections</returns>
         private Dictionary<string, List<PackageException>> writeUnpackagedMod(Proc p, List<string> enabledMods)
         {
             Dictionary<string, List<PackageException>> ErrRetDict = new Dictionary<string, List<PackageException>>();
@@ -509,6 +521,12 @@ namespace EVEModX
             return ErrRetDict;
         }
 
+        /// <summary>
+        /// Write Packaged mods (zipped mods)
+        /// </summary>
+        /// <param name="p">Process</param>
+        /// <param name="enabledMods">Enabled Mods List</param>
+        /// <returns>Exceptions during injections</returns>
         private Dictionary<string, List<PackageException>> writePackagedMod(Proc p, List<string> enabledMods)
         {
             Dictionary<string, List<PackageException>> ErrRetDict = new Dictionary<string, List<PackageException>>();
@@ -540,13 +558,21 @@ namespace EVEModX
             return ErrRetDict;
         }
         
-
+        /// <summary>
+        /// Package injection error class
+        /// </summary>
         class PackageException
         {
             public string pgName { get; set; }
             public string pgType { get; set; }
             public Exception e { get; set; }
 
+            /// <summary>
+            /// Create new package exception
+            /// </summary>
+            /// <param name="modname">Mod Name</param>
+            /// <param name="type">Mod Type, Z=Zip package, S=System error, P=Plain Folder Package</param>
+            /// <param name="ex">Exception during executing(Any instance of System.Exception)</param>
             public PackageException(string modname, string type, Exception ex)
             {
                 pgName = modname;

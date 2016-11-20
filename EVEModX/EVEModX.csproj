@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\20160802032652868_easyicon_net_64.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Injector.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -132,10 +132,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\20160802032652868_easyicon_net_64.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Medical-Health-Syringe-injection.ico" />
+    <Content Include="Resources\Injector.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

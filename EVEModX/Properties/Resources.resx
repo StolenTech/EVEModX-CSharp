@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="injection_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\20160802032652868_easyicon_net_64.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Injector" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Injector.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Preferences_std_json" xml:space="preserve">
     <value>{
@@ -131,8 +131,5 @@
     "RemoveTiancityBanner"
   ]
 }</value>
-  </data>
-  <data name="Medical_Health_Syringe_injection" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Medical-Health-Syringe-injection.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

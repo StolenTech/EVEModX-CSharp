@@ -244,3 +244,5 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /EVEModX/Merged/log
+/EVEModX/Merged/mod
+/EVEModX/Merged/preferences.json

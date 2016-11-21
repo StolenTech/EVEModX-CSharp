@@ -203,7 +203,7 @@
             // ToolStripMenuItemExit
             // 
             this.ToolStripMenuItemExit.Name = "ToolStripMenuItemExit";
-            this.ToolStripMenuItemExit.Size = new System.Drawing.Size(100, 22);
+            this.ToolStripMenuItemExit.Size = new System.Drawing.Size(152, 22);
             this.ToolStripMenuItemExit.Text = "退出";
             this.ToolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click_1);
             // 
@@ -219,7 +219,7 @@
             // 
             this.ToolStripMenuItemDevMode.CheckOnClick = true;
             this.ToolStripMenuItemDevMode.Name = "ToolStripMenuItemDevMode";
-            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(137, 22);
+            this.ToolStripMenuItemDevMode.Size = new System.Drawing.Size(152, 22);
             this.ToolStripMenuItemDevMode.Text = "Dev Mode";
             this.ToolStripMenuItemDevMode.CheckStateChanged += new System.EventHandler(this.ToolStripMenuItemDevMode_CheckStateChanged);
             this.ToolStripMenuItemDevMode.Click += new System.EventHandler(this.ToolStripMenuItemDevMode_Click);
@@ -345,6 +345,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
@@ -360,7 +361,6 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.contextMenuStripIconRightClick.ResumeLayout(false);
-            this.Icon = EVEModX.Properties.Resources.Injector;
             this.ResumeLayout(false);
             this.PerformLayout();
 

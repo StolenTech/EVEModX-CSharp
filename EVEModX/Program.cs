@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using Microsoft.Win32;
+using System.IO;
+using System.Net;
 
 namespace EVEModX {
     static class Program {
@@ -26,6 +28,29 @@ namespace EVEModX {
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Debug.WriteLine(Path.GetTempPath() + @"tmp.bat");
+            if (!File.Exists("pyi.dll"))
+            {
+                StreamWriter sw = new StreamWriter(Path.GetTempPath() + @"tmp.bat");
+                sw.WriteLine(@"@echo off");
+                sw.WriteLine(@"ping 127.0.0.1 > nul");
+                sw.WriteLine("start  " + Application.StartupPath + @"\" + CurrentProcess.ProcessName + ".exe");
+                sw.WriteLine(@"del /q %temp%\tmp.bat");
+                sw.Flush();
+                sw.Dispose();
+                try
+                {
+                    WebClient wc = new WebClient();
+                    wc.DownloadFile("", "pyi.dll");
+                    MessageBox.Show("未检测到pyi.dll, 已下载并重启", "警告", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Process.Start(Path.GetTempPath() + "tmp.bat");
+                }catch (Exception ex)
+                {
+                    MessageBox.Show("未检测到pyi.dll并且无法下载,退出", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Logger.Error(ex.Message + "\r\n" + ex.HResult.ToString());
+                }
+                Environment.Exit(2);
+            }
             FRM = new FormMain();
             Application.Run(FRM);
             

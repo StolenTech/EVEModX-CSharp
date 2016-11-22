@@ -35,15 +35,20 @@ namespace EVEModX {
                 sw.WriteLine(@"@echo off");
                 sw.WriteLine(@"ping 127.0.0.1 > nul");
                 sw.WriteLine("start  " + Application.StartupPath + @"\" + CurrentProcess.ProcessName + ".exe");
-                sw.WriteLine(@"del /q %temp%\tmp.bat");
+                sw.WriteLine(@"del /q %%temp%%\tmp.bat");
                 sw.Flush();
                 sw.Dispose();
                 try
                 {
                     WebClient wc = new WebClient();
-                    wc.DownloadFile("", "pyi.dll");
+                    wc.DownloadFile(@"https://repo.evemodx.com/uploads/emx/components/Pyi.dll", "pyi.dll");
                     MessageBox.Show("未检测到pyi.dll, 已下载并重启", "警告", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    Process.Start(Path.GetTempPath() + "tmp.bat");
+                    Process proc = new Process();
+                    proc.StartInfo.FileName = Path.GetTempPath() + "tmp.bat";
+                    proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    proc.StartInfo.CreateNoWindow = true;
+                    proc.Start();
+                    //Process.Start();
                 }catch (Exception ex)
                 {
                     MessageBox.Show("未检测到pyi.dll并且无法下载,退出", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);

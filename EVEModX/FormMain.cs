@@ -273,7 +273,7 @@ namespace EVEModX
                     }
                 }catch (Exception ex)
                 {
-
+                    Logger.Error("GetMod Failed: " + zFile.Name + " " + ex.Message);
                 }
            }
                 
@@ -635,61 +635,51 @@ namespace EVEModX
                     MessageBox.Show("OpenProcessToken or hModule Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new UnauthorizedAccessException("OpenProcessToken or hModule Failed, code 1");
                     //Environment.Exit(1);
-                    break;
                 case 2:
                     Logger.Error("LookupPrivilegeValue or PyGILState_Ensure Failed, code 2");
                     MessageBox.Show("LookupPrivilegeValue or PyGILState_Ensure Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new UnauthorizedAccessException("LookupPrivilegeValue or PyGILState_Ensure Failed, code 2");
                     //Environment.Exit(2);
-                    break;
                 case 3:
                     Logger.Error("AdjustTokenPrivileges or PyRun_SimpleString Failed, code 3");
                     MessageBox.Show("AdjustTokenPrivileges or PyRun_SimpleString Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new UnauthorizedAccessException("AdjustTokenPrivileges or PyRun_SimpleString Failed, code 3");
                     //Environment.Exit(3);
-                    break;
                 case 4:
                     Logger.Error("PyGILState_Release Failed, code 4");
                     MessageBox.Show("PyGILState_Release Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new InvalidOperationException("PyGILState_Release Failed, code 4");
                     //Environment.Exit(4);
-                    break;
                 case 5:
                     Logger.Error("WriteProcessMemory Failed, code 5");
                     MessageBox.Show("WriteProcessMemory Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new InvalidOperationException("WriteProcessMemory Failed, code 5");
                     //Environment.Exit(5);
-                    break;
                 case 6:
                     Logger.Error("WriteProcessMemory2 Failed, code 6");
                     MessageBox.Show("WriteProcessMemory2 Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new InvalidOperationException("WriteProcessMemory2 Failed, code 6");
                     //Environment.Exit(6);
-                    break;
                 case 7:
                     Logger.Error("CreateRemoteThread Failed, code 7");
                     MessageBox.Show("CreateRemoteThread Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new InvalidOperationException("CreateRemoteThread Failed, code 7");
                     //Environment.Exit(7);
-                    break;
                 case 8:
                     Logger.Error("WaitForSingleObject Failed, code 8");
                     MessageBox.Show("WaitForSingleObject Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new InvalidOperationException("WaitForSingleObject Failed, code 8");
                     //Environment.Exit(8);
-                    break;
                 case 9:
                     Logger.Error("GetExitCodeThread Failed, code 9");
                     MessageBox.Show("GetExitCodeThread Failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new InvalidDataException("GetExitCodeThread Failed, code 9");
                     //Environment.Exit(9);
-                    break;
                 case 10:
                     Logger.Error("code 10");
                     MessageBox.Show("exitCode 10", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new Exception("Unknown Exception, code 10");
                     //Environment.Exit(10);
-                    break;
                 default:
                     break;
             }

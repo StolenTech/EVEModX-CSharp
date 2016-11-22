@@ -26,9 +26,12 @@ namespace EVEModX {
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+            FRM = new FormMain();
+            Application.Run(FRM);
             
         }
+
+        static public FormMain FRM;
 
         static string DotNetErrorStr = ".Net framework 4.5 or higher not detected. Please install .Net framework 4.5 or higher version.";
         static void CheckDotNetVersion()

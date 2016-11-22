@@ -27,7 +27,9 @@ namespace EVEModX
 
         private FormWindowState currentStatus = FormWindowState.Normal;
 
-        private bool isInDevMode = false;
+        public List<modInfo> Mods = new List<modInfo>();
+
+        public bool isInDevMode = false;
 
         /// <summary>
         /// This dictionary is used to stor each mod is zip package or directory.
@@ -66,6 +68,7 @@ namespace EVEModX
             public string version;
             public string author;
             public string description;
+            private string modName;
         }
 
         /// <summary>
@@ -89,6 +92,7 @@ namespace EVEModX
             Logger.Debug("Curr directory: " + Environment.CurrentDirectory);
             Logger.Debug("Curr user: " + Environment.UserName);
             notifyIconMain.Icon = EVEModX.Properties.Resources.Injector;
+            Icon = Properties.Resources.Injector;
         }
 
         /// <summary>
@@ -150,6 +154,7 @@ namespace EVEModX
         /// </summary>
         private void UpdateMod()
         {
+
             Logger.Debug("Updating mods list");
 
             if (!Directory.Exists("mods"))
@@ -246,25 +251,32 @@ namespace EVEModX
             var sFiles = (new DirectoryInfo("mods")).GetFiles("*.zip");
             foreach (var zFile in sFiles)
             {
-                var zipToOpen = new FileStream(zFile.FullName, FileMode.Open);
-                var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read);
-                string ModName = getModNameFromFileName(zFile);
-                if (!m_ModTypeList.ContainsKey(ModName))
-                {
-                    try
+                try {
+                    var zipToOpen = new FileStream(zFile.FullName, FileMode.Open);
+                    var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read);
+                    string ModName = getModNameFromFileName(zFile);
+                    if (!m_ModTypeList.ContainsKey(ModName))
                     {
-                        Stream tStream = archive.GetEntry(ModName + "/info.json").Open();
-                        StreamReader SR = new StreamReader(tStream, Encoding.UTF8, false);
-                        string T_INF = SR.ReadToEnd();
-                        ModInfo o = JsonConvert.DeserializeObject<ModInfo>(T_INF);
-                        listViewMod.Items.Add(new ListViewItem(new string[] { ModName, o.description, o.version, o.author }));
-                        m_ModTypeList.Add(ModName, true);
-                    }catch (Exception ex)
-                    {
-                        Logger.Error(ex.Message);
+                        try
+                        {
+                            Stream tStream = archive.GetEntry(ModName + "/info.json").Open();
+                            StreamReader SR = new StreamReader(tStream, Encoding.UTF8, false);
+                            string T_INF = SR.ReadToEnd();
+                            ModInfo o = JsonConvert.DeserializeObject<ModInfo>(T_INF);
+                            listViewMod.Items.Add(new ListViewItem(new string[] { ModName, o.description, o.version, o.author }));
+                            m_ModTypeList.Add(ModName, true);
+                            Mods.Add(new modInfo(ModName, o.description, o.version, o.author));
+                        } catch (Exception ex)
+                        {
+                            Logger.Error(ex.Message);
+                        }
                     }
+                }catch (Exception ex)
+                {
+
                 }
-            }
+           }
+                
         }
 
         /// <summary>
@@ -782,8 +794,7 @@ namespace EVEModX
         #region "tray icon processer"
         private void buttonRefreshModList_Click(object sender, EventArgs e)
         {
-            listViewMod.Items.Clear();
-            UpdateMod();
+            ResetData();
         }
 
         private void showMainWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -834,7 +845,7 @@ namespace EVEModX
 
             }
         }
-
+        #endregion
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
 
         }
@@ -850,8 +861,23 @@ namespace EVEModX
                 listViewMod.ContextMenuStrip = null;
             }
         }
+        
+        private void ToolStripMenuItemModManagement_Click(object sender, EventArgs e)
+        {
+            FormModManagement fmm = new FormModManagement();
+            fmm.ShowDialog();
+            ResetData();
+        }
+
+        private void ResetData()
+        {
+            listViewMod.Items.Clear();
+            Mods.Clear();
+            m_ModTypeList.Clear();
+            UpdateMod();
+        }
     }
-    #endregion
+    
 
     /// <summary>
     /// logger class
@@ -969,6 +995,12 @@ namespace EVEModX
         public static void Error(string msg)
         {
             msg = string.Format("[{0} {1}] : {2}", "Error", DateTime.Now.ToString(), msg);
+            Write(msg);
+        }
+
+        public static void Warning(string msg)
+        {
+            msg = string.Format("[{0} {1}] : {2}", "Warning", DateTime.Now.ToString(), msg);
             Write(msg);
         }
     }

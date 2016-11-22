@@ -24,7 +24,6 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.groupBoxProcesses = new System.Windows.Forms.GroupBox();
             this.listViewGameProcess = new System.Windows.Forms.ListView();
             this.columnProcHeaderPid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -57,6 +56,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMain = new System.Windows.Forms.NotifyIcon(this.components);
+            this.ToolStripMenuItemModManagement = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxProcesses.SuspendLayout();
             this.groupBoxMod.SuspendLayout();
             this.contextMenuStripMods.SuspendLayout();
@@ -210,6 +210,7 @@
             // ToolStripMenuItemOption
             // 
             this.ToolStripMenuItemOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemModManagement,
             this.ToolStripMenuItemDevMode});
             this.ToolStripMenuItemOption.Name = "ToolStripMenuItemOption";
             this.ToolStripMenuItemOption.Size = new System.Drawing.Size(44, 21);
@@ -330,6 +331,13 @@
             this.notifyIconMain.Visible = true;
             this.notifyIconMain.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIconMain_MouseDoubleClick);
             // 
+            // ToolStripMenuItemModManagement
+            // 
+            this.ToolStripMenuItemModManagement.Name = "ToolStripMenuItemModManagement";
+            this.ToolStripMenuItemModManagement.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemModManagement.Text = "Mod管理";
+            this.ToolStripMenuItemModManagement.Click += new System.EventHandler(this.ToolStripMenuItemModManagement_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -345,7 +353,6 @@
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
@@ -399,6 +406,7 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon notifyIconMain;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemModManagement;
     }
 }
 

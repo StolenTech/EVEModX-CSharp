@@ -15,6 +15,7 @@ namespace EVEModX {
         /// </summary>
         [STAThread]
         static void Main() {
+            
             Process CurrentProcess = Process.GetCurrentProcess();
             List<Process> AllProc =new List<Process>( Process.GetProcessesByName(CurrentProcess.ProcessName));
             if (AllProc.Count>1) { Application.Exit(); }
@@ -26,6 +27,40 @@ namespace EVEModX {
                 Logger.Error(e.Message);
                 MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            Version cv = new Version("0.0");
+            try
+            {
+                var vstr = Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows NT").OpenSubKey("CurrentVersion").GetValue("CurrentMajorVersionNumber");
+                if (vstr == null)
+                {
+                    cv = new Version((string)Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows NT").OpenSubKey("CurrentVersion").GetValue("CurrentVersion"));
+                }
+                else
+                {
+                    int vma, vmi;
+                    vma = (int)Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows NT").OpenSubKey("CurrentVersion").GetValue("CurrentMajorVersionNumber");
+                    vmi = (int)Registry.LocalMachine.OpenSubKey("Software").OpenSubKey("Microsoft").OpenSubKey("Windows NT").OpenSubKey("CurrentVersion").GetValue("CurrentMinorVersionNumber");
+                    cv = new Version(vma.ToString() + "." + vmi.ToString());
+                }
+            }catch (Exception exc)
+            {
+                Logger.Error(exc.Message);
+                MessageBox.Show(exc.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(4);
+            }
+            
+            Version cpv = new Version("6.3");
+            if(cv.CompareTo(cpv) <= 0)
+            {
+                Logger.Error("Unsuporrted OS. DO NOT PROVIDE TECHNICAL SUPPORT.");
+                var o = MessageBox.Show("Unsuporrted OS, are you sure you want to continue?\r\nNo support or warrnetry will be applied.", "Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (o == DialogResult.No)
+                {
+                    Environment.Exit(3);
+                }
+                Logger.Info("Forced start on unsupported OS.");
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Debug.WriteLine(Path.GetTempPath() + @"tmp.bat");
@@ -56,6 +91,8 @@ namespace EVEModX {
                 }
                 Environment.Exit(2);
             }
+
+
             FRM = new FormMain();
             Application.Run(FRM);
             

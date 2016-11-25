@@ -220,6 +220,7 @@ namespace EVEModX
         /// <param name="d">directories</param>
         private void getModsFromFolder(string[] d)
         {
+            buttonRefreshModList.Enabled = false;
             foreach (var e in d)
             {
                 if (File.Exists(e + "\\info.json") == false)
@@ -241,6 +242,7 @@ namespace EVEModX
                 listViewMod.Items.Add(new ListViewItem(new string[] { e.Substring(5), o.description, o.version, o.author }));
                 m_ModTypeList.Add(e.Substring(5), false);
             }
+            buttonRefreshModList.Enabled = true;
         }
 
         
@@ -407,7 +409,7 @@ namespace EVEModX
         private void buttonDoInject_Click(object sender, EventArgs e)
         {
             //RaisePrivileges();
-
+            buttonDoInject.Enabled = false;
             if ((listViewMod.CheckedItems.Count == 0) || (listViewGameProcess.CheckedItems.Count == 0))
             {
                 MessageBox.Show("未选中游戏进程/Mod", "Informational", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -438,6 +440,7 @@ namespace EVEModX
                 Logger.Error(errinfo);
                 MessageBox.Show(errinfo, "Error in injection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+            buttonDoInject.Enabled = true;
         }
 
         /// <summary>

@@ -154,7 +154,7 @@ namespace EVEModX
         /// </summary>
         private void UpdateMod()
         {
-
+            buttonRefreshModList.Enabled = false;
             Logger.Debug("Updating mods list");
 
             if (!Directory.Exists("mods"))
@@ -211,6 +211,7 @@ namespace EVEModX
                     }
                 }
             }
+            buttonRefreshModList.Enabled = true;
         }
         
         /// <summary>

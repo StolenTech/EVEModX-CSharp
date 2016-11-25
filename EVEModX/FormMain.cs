@@ -754,8 +754,10 @@ namespace EVEModX
         /// <param name="e"></param>
         private void buttonReloadProcesses_Click(object sender, EventArgs e)
         {
+            buttonRefreshModList.Enabled = false;
             Logger.Debug("Refresh Process\n");
             UpdateProcess();
+            buttonRefreshModList.Enabled = true;
         }
 
         /// <summary>
